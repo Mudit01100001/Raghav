@@ -868,6 +868,7 @@ footer{
       </div>
       <div class="wordle-wrap">
         <div id="wordle-day-counter" class="game-day-counter" style="text-align:center"></div>
+        <div class="conn-countdown" id="wordle-countdown" style="text-align:center"></div>
         <div class="wordle-msg" id="w-msg">Guess the 6-letter word!</div>
         <div class="wordle-grid" id="w-grid"></div>
         <div style="margin:14px 0"></div>
@@ -931,8 +932,15 @@ footer{
         <button class="music-play-btn" id="m-play" onclick="musicToggle()">▶</button>
         <button class="music-btn" onclick="musicNext()">⏭</button>
       </div>
-      <div style="margin-top:10px;font-size:11px;color:var(--gray)">Tap ▶ to stream</div>
       <div class="track-list" id="track-list"></div>
+      <div id="sp-inline-wrap" style="margin-top:16px; border-radius:12px; overflow:hidden; display:none;">
+        <iframe id="sp-inline-iframe"
+          src=""
+          width="100%" height="152" frameborder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy" style="display:block; border-radius:12px; border:none;">
+        </iframe>
+      </div>
     </div>
   </div>
 </section>
@@ -1119,24 +1127,54 @@ const photoFiles = [
 // ─────────────────────────────
 // SONG OF DAY
 // ─────────────────────────────
-const SONGS=[
-  {title:'R U Mine?',ytId:'hQ33wSAFBFc'},
-  {title:'Do I Wanna Know?',ytId:'bpOSxM0MsIo'},
-  {title:'505',ytId:'jv2mNatKUn8'},
-  {title:'Fluorescent Adolescent',ytId:'_9QiA3DJKiQ'},
-  {title:"I Wanna Be Yours",ytId:'ckqkMDlx-vM'},
-  {title:"Why'd You Only Call Me When You're High?",ytId:'FxFqh3TYVOA'},
-  {title:'Arabella',ytId:'UPHFWJFEpE8'},
-  {title:'Snap Out Of It',ytId:'tXH2wBT4fcc'},
-  {title:'Crying Lightning',ytId:'v_8oRWkCXyE'},
-  {title:'Cornerstone',ytId:'ZX5MRB29wyk'},
+const SONGS = [
+  { title: "R U Mine?",                                ytId: "hQ33wSAFBFc", spotifyId: "2AT8iROs4FQueDv2c8q2KE" },
+  { title: "Do I Wanna Know?",                         ytId: "BP89rXWp94Y", spotifyId: "5FVd6KXrgO9B3JPmC8OPst" },
+  { title: "505",                                      ytId: "l1v98hVdCq0", spotifyId: "0BxE4FqsDD1Ot4YuBXwAPp" },
+  { title: "Fluorescent Adolescent",                   ytId: "Ma7lyfYzIw8", spotifyId: "2x8evxqUlF0eRabbW2JBJd" },
+  { title: "I Wanna Be Yours",                         ytId: "nyjQ495291w", spotifyId: "5XeFesFbtLpXzIVDNQP22n" },
+  { title: "Why'd You Only Call Me When You're High?", ytId: "6366d0f24b0", spotifyId: "086myS9r57YsLbJpU0TgK9" },
+  { title: "Arabella",                                 ytId: "Nj8r3qmOoZ8", spotifyId: "7nzsY8vlnKdvGOEE0rjAXZ" },
+  { title: "Snap Out Of It",                           ytId: "AxTEspk1n34", spotifyId: "0NdTUS4UiNYCNn5FgVqKQY" },
+  { title: "Crying Lightning",                         ytId: "a3i7065h46",  spotifyId: "6wVWJl64yoTzU27EI8ep20" },
+  { title: "Cornerstone",                              ytId: "bKlyKb6h46",  spotifyId: "5bsnLiT00hG37qd8p2jdVl" },
+  { title: "Do Me a Favour",                           ytId: null,          spotifyId: "2BqfIlpahcebJPeu1IUTEo" },
+  { title: "Teddy Picker",                             ytId: null,          spotifyId: "5kxVyCgEUND7E2QKG7JmoF" },
+  { title: "Mardy Bum",                                ytId: null,          spotifyId: "2fyIS6GXMgUcSv4oejx63f" },
+  { title: "From The Ritz To The Rubble",              ytId: null,          spotifyId: "2vQQfWTanvD99OeHLAoyhW" },
+  { title: "Brianstorm",                               ytId: null,          spotifyId: "7f9I5WdyXm5q1XqnSYgQZb" },
+  { title: "Pretty Visitors",                          ytId: null,          spotifyId: "45n7uujqwmMyBMjBu9SwRu" },
+  { title: "Fireside",                                 ytId: null,          spotifyId: "4atMrAadB7dS8xn9vfk9PQ" },
+  { title: "Library Pictures",                         ytId: null,          spotifyId: "0qfGWpvJGlp17wdTm19ioK" },
+  { title: "One For The Road",                         ytId: null,          spotifyId: "6wNUBZNWFxdUGof6vkaykE" },
+  { title: "Cornerstone",                              ytId: "bKlyKb6h46",  spotifyId: "5bsnLiT00hG37qd8p2jdVl" },
 ];
 const dayIdx=Math.floor(Date.now()/86400000)%SONGS.length;
 const todaySong=SONGS[dayIdx];
 document.getElementById('sotd-title').textContent=todaySong.title+' — Arctic Monkeys';
 function sotdToggle(){
-  openYtFloat('https://www.youtube.com/embed/'+todaySong.ytId+'?autoplay=1&rel=0&modestbranding=1', todaySong.title+' — Arctic Monkeys');
   document.getElementById('sotd-disc').classList.add('spin');
+  if(todaySong.ytId){
+    // Real YouTube ID → open the YouTube float as before
+    openYtFloat('https://www.youtube.com/embed/'+todaySong.ytId+'?autoplay=1', todaySong.title+' — Arctic Monkeys');
+  } else if(todaySong.spotifyId){
+    // ytId is null → fall back to the inline Spotify embed in the music section
+    const music=document.getElementById('music');
+    if(music) music.scrollIntoView({behavior:'smooth',block:'start'});
+    playInline(todaySong.spotifyId);
+  }
+}
+
+// ── INLINE SPOTIFY PLAYER ──
+function playInline(spotifyId){
+  const wrap=document.getElementById('sp-inline-wrap');
+  const iframe=document.getElementById('sp-inline-iframe');
+  iframe.src='https://open.spotify.com/embed/track/'+spotifyId+'?utm_source=generator&theme=0';
+  wrap.style.display='block';
+}
+function stopInline(){
+  document.getElementById('sp-inline-iframe').src='';
+  document.getElementById('sp-inline-wrap').style.display='none';
 }
 
 // ── FLOATING YOUTUBE PLAYER ──
@@ -1150,7 +1188,7 @@ function openYtFloat(src, title){
 function closeYtFloat(){
   document.getElementById('yt-float').classList.remove('open');
   document.getElementById('yt-float-iframe').src='';
-  // Stop all spinning animations on close
+  stopInline();
   const sotdDisc=document.getElementById('sotd-disc');
   if(sotdDisc)sotdDisc.classList.remove('spin');
   const vinyl=document.getElementById('vinyl');
@@ -1165,7 +1203,7 @@ function closeYtFloat(){
 // ─────────────────────────────
 // GLOBAL DATE EPOCH
 // ─────────────────────────────
-const daysSinceEpoch = Math.max(0, Math.floor((Date.now() - new Date('2025-04-30T00:00:00').getTime()) / 86400000));
+const daysSinceEpoch = Math.max(0, Math.floor((Date.now() - new Date('2026-05-01T00:00:00').getTime()) / 86400000));
 
 // ─────────────────────────────
 // COMPLIMENT
@@ -1194,7 +1232,7 @@ const COMPS=[
   "You are a very strong, ambitious and brave girl — you will achieve everything you want to in life.",
 ];
 function loadComp(){
-  const april30=new Date('2025-04-30T00:00:00').getTime();
+  const april30=new Date('2026-05-01T00:00:00').getTime();
   const dayIndex=Math.floor((Date.now()-april30)/86400000);
   const idx=((dayIndex%COMPS.length)+COMPS.length)%COMPS.length;
   document.getElementById('comp-text').textContent=COMPS[idx];
@@ -1256,52 +1294,85 @@ function simpleHash(str){
   let h=0;for(let i=0;i<str.length;i++)h=(h*31+str.charCodeAt(i))|0;
   return Math.abs(h);
 }
+let SONG_BANK=[];
+
 async function loadCSVData(){
-  try{
-    const [cR,wR,tR]=await Promise.all([
-      fetch('csv/connections_archive.csv'),
-      fetch('csv/sixletter_words.csv'),
-      fetch('csv/trivia_mcq_400.csv')
-    ]);
-    const [cT,wT,tT]=await Promise.all([cR.text(),wR.text(),tR.text()]);
-
-    // Connections: group 4 rows per date into puzzle objects
-    const connRows=parseCSV(cT);
-    const puzzleMap={};
-    const diffMap={Easiest:0,Easy:1,Medium:2,Hard:3};
-    connRows.forEach(r=>{
-      if(!puzzleMap[r.date])puzzleMap[r.date]=[];
-      puzzleMap[r.date].push({cat:r.category,words:[r.word_1,r.word_2,r.word_3,r.word_4],diff:diffMap[r.difficulty]??0});
-    });
-    CONN_PUZZLES=Object.entries(puzzleMap)
-      .sort((a,b)=>a[0].localeCompare(b[0]))
-      .map(([,groups])=>({groups}));
-
-    // Wordle: all 6-letter words from CSV
-    const wordRows=parseCSV(wT);
-    W_WORDS=wordRows.map(r=>r.word.trim().toUpperCase()).filter(w=>w.length===6);
-    W_VALID=new Set(W_WORDS);
-
-    // Trivia: shuffle options deterministically per question
-    const trivRows=parseCSV(tT);
-    TRIVIA_BANK=trivRows.map(r=>{
-      const opts=[r.correct_answer,r.option_b,r.option_c,r.option_d];
-      // Deterministic shuffle based on question hash so same order every reload
-      const order=[0,1,2,3].sort((a,b)=>simpleHash(r.question+a)-simpleHash(r.question+b));
-      const shuffled=order.map(i=>opts[i]);
-      const correctIdx=order.indexOf(0);
-      return{q:r.question,o:shuffled,a:correctIdx};
-    });
-
-    return true;
-  }catch(e){
-    console.error('CSV load failed, using fallback data',e);
-    return false;
+  // Load each CSV independently — one failure won't break the others
+  async function safeFetch(url){
+    try{
+      const r=await fetch(url);
+      if(!r.ok){console.warn('CSV not found:',url,'('+r.status+')');return null;}
+      return await r.text();
+    }catch(e){console.warn('CSV fetch error:',url,e);return null;}
   }
+
+  const [cT,wT,tT,sT]=await Promise.all([
+    safeFetch('csv/connections_archive.csv'),
+    safeFetch('csv/sixletter_words.csv'),
+    safeFetch('csv/trivia_mcq_400.csv'),
+    safeFetch('csv/lyric_fill_blank.csv')
+  ]);
+
+  // Connections
+  if(cT){
+    try{
+      const connRows=parseCSV(cT);
+      const puzzleMap={};
+      const diffMap={Easiest:0,Easy:1,Medium:2,Hard:3};
+      connRows.forEach(r=>{
+        if(!puzzleMap[r.date])puzzleMap[r.date]=[];
+        puzzleMap[r.date].push({cat:r.category,words:[r.word_1,r.word_2,r.word_3,r.word_4],diff:diffMap[r.difficulty]??0});
+      });
+      CONN_PUZZLES=Object.entries(puzzleMap)
+        .sort((a,b)=>a[0].localeCompare(b[0]))
+        .map(([,groups])=>({groups}));
+    }catch(e){console.error('Connections CSV parse error',e);}
+  }
+
+  // Wordle
+  if(wT){
+    try{
+      const wordRows=parseCSV(wT);
+      W_WORDS=wordRows.map(r=>r.word.trim().toUpperCase()).filter(w=>w.length===6);
+      W_VALID=new Set(W_WORDS);
+    }catch(e){console.error('Wordle CSV parse error',e);}
+  }
+
+  // Trivia
+  if(tT){
+    try{
+      const trivRows=parseCSV(tT);
+      TRIVIA_BANK=trivRows.map(r=>{
+        const opts=[r.correct_answer,r.option_b,r.option_c,r.option_d];
+        const order=[0,1,2,3].sort((a,b)=>simpleHash(r.question+a)-simpleHash(r.question+b));
+        const shuffled=order.map(i=>opts[i]);
+        const correctIdx=order.indexOf(0);
+        return{q:r.question,o:shuffled,a:correctIdx};
+      });
+    }catch(e){console.error('Trivia CSV parse error',e);}
+  }
+
+  // Lyric fill-in-the-blank
+  if(sT){
+    try{
+      const songRows=parseCSV(sT);
+      const seen=new Set();
+      SONG_BANK=songRows
+        .filter(r=>r['lyric_with_blank']&&r['answer']&&r['answer']!=='N/A')
+        .filter(r=>{
+          const key=r['artist']+'|'+r['song_title']+'|'+r['lyric_with_blank'];
+          if(seen.has(key))return false;
+          seen.add(key);return true;
+        })
+        .map(r=>({artist:r['artist'],song:r['song_title'],line:r['lyric_with_blank'],word:r['answer'].trim().toUpperCase(),diff:r['difficulty']||''}));
+    }catch(e){console.error('Lyric CSV parse error',e);}
+  }
+
+  return true;
 }
 
 function buildConnPuzzle(){
-  const april30=new Date('2025-04-30T00:00:00').getTime();
+  const april30=new Date('2026-05-01T00:00:00').getTime();
   const dayIndex=Math.max(0,Math.floor((Date.now()-april30)/86400000));
   const idx=dayIndex%CONN_PUZZLES.length;
   return CONN_PUZZLES[idx].groups;
@@ -1321,7 +1392,7 @@ function initConn(){
   // Day counter
   const connDay=daysSinceEpoch%CONN_PUZZLES.length+1;
   const connCounter=document.getElementById('conn-day-counter');
-  if(connCounter)connCounter.textContent=`Puzzle #${connDay} of ${CONN_PUZZLES.length} · resets at midnight`;
+  if(connCounter)connCounter.textContent=`Day ${daysSinceEpoch+1} · resets at midnight`;
   renderConnLives();renderConnBoard();
   startConnCountdown();
 }
@@ -1336,6 +1407,21 @@ function startConnCountdown(){
     const s=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
     const el=document.getElementById('conn-countdown');
     if(el)el.textContent=`Next puzzle in ${h}:${m}:${s}`;
+  }
+  tick();
+  setInterval(tick,1000);
+}
+function startWordleCountdown(){
+  function tick(){
+    const now=new Date();
+    const midnight=new Date(now);
+    midnight.setHours(24,0,0,0);
+    const diff=midnight-now;
+    const h=String(Math.floor(diff/3600000)).padStart(2,'0');
+    const m=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    const s=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    const el=document.getElementById('wordle-countdown');
+    if(el)el.textContent=`Next word in ${h}:${m}:${s}`;
   }
   tick();
   setInterval(tick,1000);
@@ -1408,9 +1494,9 @@ function initWordle(){
   wGuesses=[];wCur='';wOver=false;wKb={};
   document.getElementById('w-msg').textContent='Guess the 6-letter word!';
   // Day counter (render once on first call only)
-  const wordleDay=daysSinceEpoch%W_WORDS.length+1;
   const wCounter=document.getElementById('wordle-day-counter');
-  if(wCounter&&!wCounter.dataset.set){wCounter.textContent=`Word #${wordleDay} · new word daily`;wCounter.dataset.set='1';}
+  if(wCounter)wCounter.textContent=`Day ${daysSinceEpoch+1} · new word daily`;
+  startWordleCountdown();
   renderWGrid(false);renderWKb();
 }
 function renderWGrid(doFlip){
@@ -1500,18 +1586,18 @@ function navClose(){
 // ─────────────────────────────
 // Rock classics YT playlist IDs
 const ROCK_YT=[
-  {n:'R U Mine?',a:'Arctic Monkeys',id:'hQ33wSAFBFc'},
-  {n:'Do I Wanna Know?',a:'Arctic Monkeys',id:'bpOSxM0MsIo'},
-  {n:'Bohemian Rhapsody',a:'Queen',id:'fJ9rUzIMcZQ'},
-  {n:"Don't Stop Me Now",a:'Queen',id:'HgzGwKwLmgM'},
-  {n:'Wonderwall',a:'Oasis',id:'bx1Bh8ZvH84'},
-  {n:'Champagne Supernova',a:'Oasis',id:'lyRKMH5lSWA'},
-  {n:'Boulevard of Broken Dreams',a:'Green Day',id:'Soa3gO7tL-c'},
-  {n:'Good Riddance',a:'Green Day',id:'CnQ8N1KacBc'},
-  {n:'Come As You Are',a:'Nirvana',id:'vabnZ9-ex7o'},
-  {n:'Smells Like Teen Spirit',a:'Nirvana',id:'hTWKbfoikeg'},
-  {n:'Hey Jude',a:'The Beatles',id:'A_MjCqQoLLA'},
-  {n:'Let It Be',a:'The Beatles',id:'QDYfEBY9NM4'},
+  {n:'R U Mine?',a:'Arctic Monkeys',id:'hQ33wSAFBFc',spotifyId:'2AT8iROs4FQueDv2c8q2KE'},
+  {n:'Do I Wanna Know?',a:'Arctic Monkeys',id:'bpOSxM0MsIo',spotifyId:'5FVd6KXrgO9B3JPmC8OPst'},
+  {n:'Bohemian Rhapsody',a:'Queen',id:'fJ9rUzIMcZQ',spotifyId:'4u7EnebtmKWzUH433cf5Qv'},
+  {n:"Don't Stop Me Now",a:'Queen',id:'HgzGwKwLmgM',spotifyId:'5T8EDUDqKcs6OSOwEsfqG7'},
+  {n:'Wonderwall',a:'Oasis',id:'bx1Bh8ZvH84',spotifyId:'0ViKGBsiDt52DwsLALWDSr'},
+  {n:'Champagne Supernova',a:'Oasis',id:'lyRKMH5lSWA',spotifyId:'2V5SGZFsF1yoDakHRwrmma'},
+  {n:'Boulevard of Broken Dreams',a:'Green Day',id:'Soa3gO7tL-c',spotifyId:'5GorCbAP4aL0EJ16frG2hd'},
+  {n:'Good Riddance (Time of Your Life)',a:'Green Day',id:'CnQ8N1KacBc',spotifyId:'6ORqU0bHbVCRjXm9AjyHyZ'},
+  {n:'Come As You Are',a:'Nirvana',id:'vabnZ9-ex7o',spotifyId:'2RsAajgo0g7bMCHxwH3Sk0'},
+  {n:'Smells Like Teen Spirit',a:'Nirvana',id:'hTWKbfoikeg',spotifyId:'4CeeEOM32jQcH3eN9Q2dGj'},
+  {n:'Hey Jude',a:'The Beatles',id:'A_MjCqQoLLA',spotifyId:'1eT2CjXwFXNx6oY5ydvzKU'},
+  {n:'Let It Be',a:'The Beatles',id:'QDYfEBY9NM4',spotifyId:'7iN1s7xHE4ifF5povM6A48'},
 ];
 
 // ─────────────────────────────
@@ -1531,20 +1617,24 @@ function sealClick(){
 // 10 per day, cycle through all 45 before repeating, deterministic
 let tPool=[],tIdx=0,tScore=0,tAnswered=false;
 function initTrivia(){
-  const april30=new Date('2025-04-30T00:00:00').getTime();
+  if(!TRIVIA_BANK.length){
+    const tCounter=document.getElementById('trivia-day-counter');
+    if(tCounter)tCounter.textContent='';
+    document.getElementById('trivia-body').innerHTML='<p style="text-align:center;color:#ffd700;padding:32px 0;letter-spacing:.12em;font-size:12px;opacity:.7">Loading questions…</p>';
+    return;
+  }
+  const april30=new Date('2026-05-01T00:00:00').getTime();
   const dayIndex=Math.max(0,Math.floor((Date.now()-april30)/86400000));
   const totalSets=Math.ceil(TRIVIA_BANK.length/10);
   const setIndex=dayIndex%totalSets;
   const startIdx=setIndex*10;
   let slice=TRIVIA_BANK.slice(startIdx,startIdx+10);
-  // If last set has fewer than 10, wrap to start
   if(slice.length<10){slice=slice.concat(TRIVIA_BANK.slice(0,10-slice.length));}
   tPool=slice;
   tIdx=0;tScore=0;
-  // Day counter
-  const triviaSet=daysSinceEpoch%totalSets+1;
+  const triviaSet=(daysSinceEpoch%totalSets)+1;
   const tCounter=document.getElementById('trivia-day-counter');
-  if(tCounter)tCounter.textContent=`Set ${triviaSet} of ${totalSets} · new questions daily`;
+  if(tCounter)tCounter.textContent=`Day ${daysSinceEpoch+1} · new questions daily`;
   renderTrivia();
 }
 function renderTrivia(){
@@ -1582,58 +1672,64 @@ loadCSVData().then(()=>{
   initConn();
   initWordle();
   initTrivia();
+  initLyrics();
 });
 
 // ─────────────────────────────
 // LYRIC GUESS — multi-artist rock
 // ─────────────────────────────
+// ─────────────────────────────
+// LYRIC GUESS — fill in the blank
+// SONG_BANK populated from lyric_fill_blank.csv; falls back to LYRICS
+// ─────────────────────────────
 const LYRICS=[
-  {artist:"Arctic Monkeys",song:"R U Mine?",line:"I'm a puppet on a ____ to the tune of your heartbeat",word:"STRING"},
-  {artist:"Arctic Monkeys",song:"Do I Wanna Know?",line:"Have you got colour in your cheeks? Do you ever get that ____ where you can't explain",word:"FEAR"},
-  {artist:"Arctic Monkeys",song:"505",line:"I'm going back to ____, oh whoa",word:"505"},
-  {artist:"Arctic Monkeys",song:"I Wanna Be Yours",line:"I wanna be your vacuum cleaner breathing in your ____",word:"DUST"},
-  {artist:"Arctic Monkeys",song:"Why'd You Only Call Me",line:"Why'd you only call me when you're ____?",word:"HIGH"},
-  {artist:"Arctic Monkeys",song:"Fluorescent Adolescent",line:"You used to get it in your ____",word:"UNIFORM"},
-  {artist:"Arctic Monkeys",song:"Arabella",line:"Arabella's got some interstellar-____ to her mind",word:"GATOR"},
-  {artist:"Arctic Monkeys",song:"Snap Out Of It",line:"If you're gonna let it kill you, at least put up a ____",word:"FIGHT"},
-  {artist:"Arctic Monkeys",song:"Crying Lightning",line:"And your ____ fingers clawing at the ground",word:"CROOKED"},
-  {artist:"Arctic Monkeys",song:"Cornerstone",line:"I went to a marvellous party, the ____ was as high as a kite",word:"HOST"},
-  {artist:"Arctic Monkeys",song:"Teddy Picker",line:"Oh would you please stop picking at your ____?",word:"FACE"},
-  {artist:"Arctic Monkeys",song:"From the Ritz to the Rubble",line:"And I said no, 'cause they were ____ in the head",word:"WRONG"},
-  {artist:"Oasis",song:"Wonderwall",line:"Because maybe, you're gonna be the one that ____ me",word:"SAVES"},
-  {artist:"Oasis",song:"Live Forever",line:"Maybe I don't really wanna know how your ____ goes",word:"GARDEN"},
-  {artist:"Oasis",song:"Champagne Supernova",line:"Slowly walking down the hall, faster than a ____ ball",word:"CANNON"},
-  {artist:"Queen",song:"Bohemian Rhapsody",line:"Is this the real life? Is this just ____?",word:"FANTASY"},
-  {artist:"Queen",song:"Don't Stop Me Now",line:"I'm a shooting star leaping through the ____",word:"SKY"},
-  {artist:"Green Day",song:"Good Riddance",line:"It's something unpredictable, but in the end it's ____",word:"RIGHT"},
-  {artist:"Green Day",song:"Boulevard of Broken Dreams",line:"I walk a lonely ____, the only one that I have ever known",word:"ROAD"},
-  {artist:"Nirvana",song:"Come As You Are",line:"Come as you are, as you ____, as I want you to be",word:"WERE"},
-  {artist:"Nirvana",song:"Smells Like Teen Spirit",line:"Here we are now, ____ us",word:"ENTERTAIN"},
-  {artist:"The Beatles",song:"Let It Be",line:"When I find myself in times of trouble, Mother ____ comes to me",word:"MARY"},
-  {artist:"The Beatles",song:"Hey Jude",line:"Hey Jude, don't make it ____",word:"BAD"},
+  {artist:"Arctic Monkeys",song:"R U Mine?",line:"I'm a puppet on a _____ to the tune of your heartbeat",word:"STRING"},
+  {artist:"Arctic Monkeys",song:"Do I Wanna Know?",line:"Have you got colour in your cheeks? Do you ever get that _____ where you can't explain",word:"FEAR"},
+  {artist:"Arctic Monkeys",song:"505",line:"I'm going back to _____, oh whoa",word:"505"},
+  {artist:"Arctic Monkeys",song:"I Wanna Be Yours",line:"I wanna be your vacuum cleaner breathing in your _____",word:"DUST"},
+  {artist:"Arctic Monkeys",song:"Why'd You Only Call Me When You're High?",line:"Why'd you only call me when you're _____?",word:"HIGH"},
+  {artist:"Arctic Monkeys",song:"Fluorescent Adolescent",line:"You used to get it in your _____",word:"UNIFORM"},
+  {artist:"Arctic Monkeys",song:"Arabella",line:"Arabella's got some interstellar-_____ to her mind",word:"GATOR"},
+  {artist:"Arctic Monkeys",song:"Snap Out Of It",line:"If you're gonna let it kill you, at least put up a _____",word:"FIGHT"},
+  {artist:"Oasis",song:"Wonderwall",line:"Because maybe, you're gonna be the one that _____ me",word:"SAVES"},
+  {artist:"Queen",song:"Bohemian Rhapsody",line:"Is this the real life? Is this just _____?",word:"FANTASY"},
+  {artist:"Green Day",song:"Good Riddance",line:"It's something unpredictable, but in the end it's _____",word:"RIGHT"},
+  {artist:"Nirvana",song:"Smells Like Teen Spirit",line:"Here we are now, _____ us",word:"ENTERTAIN"},
+  {artist:"The Beatles",song:"Hey Jude",line:"Hey Jude, don't make it _____",word:"BAD"},
 ];
-const lyricDayIdx=daysSinceEpoch%Math.floor(LYRICS.length/8);
-const lyricStart=lyricDayIdx*8;
-const LPOOL=[];
-for(let i=0;i<8;i++){LPOOL.push(LYRICS[(lyricStart+i)%LYRICS.length]);}
-let lIdx=0,lScore=0,lDone=false;
-function initLyrics(){lIdx=0;lScore=0;lDone=false;
-  // Day counter
-  const lyricDay=daysSinceEpoch%LYRICS.length+1;
+
+let LPOOL=[],lIdx=0,lScore=0,lDone=false;
+
+function initLyrics(){
+  const bank=SONG_BANK.length?SONG_BANK:LYRICS;
+  const april30=new Date('2026-05-01T00:00:00').getTime();
+  const dayIndex=Math.max(0,Math.floor((Date.now()-april30)/86400000));
+  const poolSize=8;
+  const totalSets=Math.max(1,Math.floor(bank.length/poolSize));
+  const setIdx=dayIndex%totalSets;
+  const start=setIdx*poolSize;
+  LPOOL=[];
+  for(let i=0;i<poolSize;i++)LPOOL.push(bank[(start+i)%bank.length]);
+  lIdx=0;lScore=0;lDone=false;
+  const lyricDay=(daysSinceEpoch%totalSets)+1;
   const lCounter=document.getElementById('lyric-day-counter');
-  if(lCounter)lCounter.textContent=`Round #${lyricDay} · new lyrics daily`;
+  if(lCounter)lCounter.textContent=`Day ${daysSinceEpoch+1} · new lyrics daily`;
+  document.getElementById('l-input').style.display='';
+  document.getElementById('l-end').innerHTML='';
   renderLyric();
 }
 function renderLyric(){
   renderLDots();
-  if(lIdx>=LPOOL.length){lDone=true;renderLEnd();return}
+  if(lIdx>=LPOOL.length){lDone=true;renderLEnd();return;}
   const q=LPOOL[lIdx];
   document.getElementById('l-artist').textContent=q.artist;
   document.getElementById('l-song').textContent=q.song;
-  const p=q.line.split('____');
-  document.getElementById('l-line').innerHTML=p[0]+'<span class="lyric-blank">____</span>'+(p[1]||'');
-  document.getElementById('l-msg').textContent='';document.getElementById('l-msg').style.color='';
-  document.getElementById('l-input').value='';document.getElementById('l-end').innerHTML='';
+  const p=q.line.split('_____');
+  document.getElementById('l-line').innerHTML=p[0]+'<span class="lyric-blank">_____</span>'+(p[1]||'');
+  document.getElementById('l-msg').textContent='';
+  document.getElementById('l-msg').style.color='';
+  document.getElementById('l-input').value='';
+  document.getElementById('l-end').innerHTML='';
   document.getElementById('l-input').focus();
 }
 function renderLDots(){
@@ -1642,20 +1738,21 @@ function renderLDots(){
 function lyricGuess(){
   if(lDone)return;
   const guess=document.getElementById('l-input').value.trim().toUpperCase();
-  const correct=guess===LPOOL[lIdx].word;
+  if(!guess)return;
+  const q=LPOOL[lIdx];
+  const correct=guess===q.word;
   if(correct)lScore++;
   const msg=document.getElementById('l-msg');
-  msg.textContent=correct?`✓ Yes! "${LPOOL[lIdx].word}"`:`✗ It was "${LPOOL[lIdx].word}"`;
+  msg.textContent=correct?`✓ Yes! "${q.word}"`:`✗ It was "${q.word}"`;
   msg.style.color=correct?'#86efac':'#fca5a5';
   lIdx++;renderLDots();
-  if(lIdx>=LPOOL.length){setTimeout(renderLEnd,800)}
-  else setTimeout(renderLyric,900);
+  if(lIdx>=LPOOL.length){setTimeout(renderLEnd,800);}
+  else setTimeout(renderLyric,1000);
 }
 function renderLEnd(){
   document.getElementById('l-end').innerHTML=`<div class="lyric-end"><div class="lyric-end-score">${lScore}/${LPOOL.length}</div><p style="font-size:14px;color:var(--lgray);margin:10px 0 20px">${lScore>=7?'Real fan energy 🎸':lScore>=4?'Decent — keep listening':lScore>=2?'Some gaps... Raghav knows more lyrics than you and he doesn\'t listen to music.':'Bruh. Even Raghav got one right.'}</p><button class="btn" onclick="initLyrics()">Try Again</button></div>`;
   document.getElementById('l-input').style.display='none';
 }
-initLyrics();
 
 // ─────────────────────────────
 // MUSIC PLAYER
@@ -1674,8 +1771,7 @@ function renderTracks(){
   TRACKS.forEach((t,i)=>{
     const d=document.createElement('div');d.className='track-item'+(i===mCur?' active':'');
     d.innerHTML=`<div class="track-n">${i===mCur&&mPlaying?'▶':i+1}</div><div class="track-info"><div class="track-name">${t.n}</div><div class="track-album">${t.a}</div></div><div style="font-size:11px;color:var(--gray)">${t.dur}</div>`;
-    d.onclick=()=>{mCur=i;mProg=0;if(!mPlaying)musicToggle();else{renderTracks();updateMusicUI();}};
-    el.appendChild(d);
+    d.onclick=()=>{mCur=i;mProg=0;const ct=ROCK_YT[i]||ROCK_YT[0];if(!mPlaying)mPlaying=true;if(ct.spotifyId)playInline(ct.spotifyId);document.getElementById('vinyl').classList.add('spinning');document.getElementById('needle').classList.add('playing');updateMusicUI();};    el.appendChild(d);
   });
 }
 function updateMusicUI(){
@@ -1690,15 +1786,20 @@ function updateMusicUI(){
   renderTracks();
 }
 function musicToggle(){
-  const t=ROCK_YT[mCur]||ROCK_YT[0];
-  openYtFloat('https://www.youtube.com/embed/'+t.id+'?autoplay=1&rel=0&modestbranding=1', t.n+' — '+t.a);
-  mPlaying=true;
-  document.getElementById('vinyl').classList.add('spinning');
-  document.getElementById('needle').classList.add('playing');
+  const ct=ROCK_YT[mCur]||ROCK_YT[0];
+  if(!mPlaying){
+    mPlaying=true;
+    if(ct.spotifyId) playInline(ct.spotifyId);
+  } else {
+    mPlaying=false;
+    stopInline();
+  }
+  document.getElementById('vinyl').classList.toggle('spinning',mPlaying);
+  document.getElementById('needle').classList.toggle('playing',mPlaying);
   updateMusicUI();
 }
-function musicNext(){mCur=(mCur+1)%TRACKS.length;mProg=0;updateMusicUI();if(mPlaying)musicToggle();}
-function musicPrev(){mCur=(mCur-1+TRACKS.length)%TRACKS.length;mProg=0;updateMusicUI();if(mPlaying)musicToggle();}
+function musicNext(){mCur=(mCur+1)%TRACKS.length;mProg=0;updateMusicUI();if(mPlaying){const ct=ROCK_YT[mCur]||ROCK_YT[0];if(ct.spotifyId)playInline(ct.spotifyId);}}
+function musicPrev(){mCur=(mCur-1+TRACKS.length)%TRACKS.length;mProg=0;updateMusicUI();if(mPlaying){const ct=ROCK_YT[mCur]||ROCK_YT[0];if(ct.spotifyId)playInline(ct.spotifyId);}}
 
 // Vinyl scratch interaction
 const vinylEl=document.getElementById('vinyl');
