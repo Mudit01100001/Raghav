@@ -1,0 +1,2506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAITY — 21</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Unbounded:wght@300;400;600;800&family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#060608;--dark:#0e0e12;--card:#15151a;--card2:#1a1a22;
+  --border:#252530;--border2:#2e2e3a;
+  --white:#f2efe9;--cream:#e8e3da;
+  --purple:#b06ef3;--purple2:#8b46d4;--purple3:#6d28d9;
+  --pglow:rgba(176,110,243,.18);--pfaint:rgba(176,110,243,.07);--pdim:rgba(176,110,243,.12);
+  --gray:#666;--lgray:#aaa;--mgray:#888;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+.cur{position:fixed;width:7px;height:7px;background:var(--purple);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+.cur2{position:fixed;width:32px;height:32px;border:1px solid rgba(176,110,243,.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .25s ease,top .25s ease,width .3s,height .3s,opacity .3s}
+.cur-big .cur{width:14px;height:14px}
+.cur-big .cur2{width:56px;height:56px;opacity:.5}
+
+/* ── FLOATING PHOTOS ── */
+.float-photo{
+  position:absolute;border-radius:12px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 0 1px rgba(176,110,243,.15);
+  pointer-events:none;z-index:0;
+  transition:opacity 1.2s ease;
+}
+.float-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-add-hint{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:1;
+  pointer-events:none;
+}
+.photo-add-hint-inner{
+  border:1.5px dashed rgba(176,110,243,.3);border-radius:16px;
+  padding:24px 36px;text-align:center;
+  background:rgba(176,110,243,.04);backdrop-filter:blur(6px);
+}
+.photo-add-hint p{font-size:12px;color:rgba(176,110,243,.6);letter-spacing:.1em;line-height:1.8}
+.photo-add-hint code{font-size:11px;color:rgba(176,110,243,.5);background:rgba(176,110,243,.08);padding:2px 8px;border-radius:4px}
+
+/* ── SONG OF DAY ── */
+.sotd{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  background:rgba(14,14,18,.92);backdrop-filter:blur(24px);
+  border:1px solid var(--border2);border-radius:40px;
+  padding:7px 14px 7px 7px;
+  display:flex;align-items:center;gap:10px;
+  z-index:300;cursor:pointer;
+  transition:border-color .25s,box-shadow .25s;
+  white-space:nowrap;
+}
+.sotd:hover{border-color:var(--purple);box-shadow:0 0 20px var(--pglow)}
+.sotd-disc{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:conic-gradient(#1a0a2e,#2d1060,#b06ef3 90deg,#2d1060 180deg,#1a0a2e);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+}
+.sotd-disc::after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:var(--dark)}
+.sotd-disc.spin{animation:discSpin 3s linear infinite}
+@keyframes discSpin{to{transform:rotate(360deg)}}
+.sotd-meta{display:flex;flex-direction:column;line-height:1.2}
+.sotd-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);font-family:'DM Sans',sans-serif}
+.sotd-title{font-size:12px;font-weight:500;color:var(--white);max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.sotd-play{width:24px;height:24px;border-radius:50%;background:var(--purple);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex-shrink:0;transition:transform .2s}
+.sotd-play:hover{transform:scale(1.1)}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 48px;
+  background:linear-gradient(to bottom,rgba(6,6,8,.85) 0%,transparent 100%);
+  backdrop-filter:blur(0px);transition:backdrop-filter .3s;
+}
+nav.scrolled{backdrop-filter:blur(16px);background:rgba(6,6,8,.7)}
+.nav-logo{
+  font-family:'Unbounded',sans-serif;font-size:18px;font-weight:800;
+  letter-spacing:-.02em;color:var(--white);text-decoration:none;
+  display:flex;align-items:center;gap:2px;
+}
+.nav-logo .dot{color:var(--purple)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--mgray);text-decoration:none;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:400;transition:color .2s}
+.nav-links a:hover{color:var(--purple)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:0 52px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-photo{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,#1a0a2e 0%,#0d0520 40%,#06060a 100%);
+  z-index:0;
+}
+.hero-photo-img{
+  position:absolute;inset:0;object-fit:cover;width:100%;height:100%;
+  opacity:.25;display:none;
+}
+.hero-photo-img.loaded{display:block}
+.hero-gradient{
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(to top,rgba(6,6,8,1) 0%,rgba(6,6,8,.7) 30%,rgba(6,6,8,.2) 60%,transparent 100%),
+    linear-gradient(to right,rgba(6,6,8,.6) 0%,transparent 50%),
+    radial-gradient(ellipse 80% 60% at 70% 20%,var(--pglow) 0%,transparent 60%);
+}
+.hero-particles{position:absolute;inset:0;z-index:2;pointer-events:none}
+.particle{position:absolute;border-radius:50%;pointer-events:none;animation:floatP var(--dur,6s) ease-in-out infinite}
+@keyframes floatP{0%,100%{transform:translateY(0) scale(1);opacity:var(--op,.4)}50%{transform:translateY(-20px) scale(1.2);opacity:calc(var(--op,.4)*.5)}}
+.hero-content{position:relative;z-index:5}
+.hero-eyebrow{
+  font-size:13px;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--purple);margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--purple)}
+.hero-name{
+  font-family:'Unbounded',sans-serif;font-weight:800;
+  font-size:clamp(72px,13vw,200px);
+  line-height:.88;letter-spacing:-.04em;
+  margin-bottom:16px;
+}
+.hero-name .purple{color:var(--purple)}
+.hero-sub{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:clamp(22px,2.8vw,38px);color:var(--lgray);
+  margin-bottom:48px;line-height:1.4;
+}
+.hero-scroll-row{display:flex;align-items:center;gap:16px}
+.hero-scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--purple),transparent)}
+.hero-scroll-txt{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gray)}
+
+/* walking character */
+.walker-wrap{position:absolute;bottom:0;left:0;right:0;z-index:3;height:60px;pointer-events:none;overflow:hidden}
+.walker{
+  position:absolute;bottom:8px;
+  animation:walk 18s linear infinite;
+  font-size:28px;
+  text-shadow:0 0 8px rgba(176,110,243,0.6);
+}
+@keyframes walk{from{left:-60px}to{left:calc(100% + 60px)}}
+.walker-shadow{
+  position:absolute;bottom:4px;width:24px;height:4px;
+  background:rgba(176,110,243,.3);border-radius:50%;
+  animation:walkS 18s linear infinite;
+  filter:blur(3px);
+}
+@keyframes walkS{from{left:-48px}to{left:calc(100% + 48px)}}
+
+/* ── COMPLIMENT ── */
+.compliment-section{
+  padding:100px 64px;
+  background:var(--dark);
+  border-top:1px solid var(--border);
+  text-align:center;position:relative;overflow:hidden;
+}
+.comp-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 50%,var(--pfaint) 0%,transparent 70%);
+  pointer-events:none;
+}
+.comp-day{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--purple);margin-bottom:20px}
+.comp-counter{font-size:10px;color:var(--gray);letter-spacing:.12em;margin-top:16px;position:relative;z-index:1}
+.comp-text{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:clamp(28px,4.5vw,56px);line-height:1.3;
+  color:var(--white);max-width:900px;margin:0 auto;
+  position:relative;z-index:1;
+}
+.comp-text::before{content:'\201C';font-size:1.2em;color:var(--purple);opacity:.5;margin-right:4px}
+.comp-text::after{content:'\201D';font-size:1.2em;color:var(--purple);opacity:.5;margin-left:4px}
+
+/* ── GAMES ── */
+.games-section{background:var(--black);padding:100px 64px}
+.sec-label{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--purple);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sec-label::after{content:'';width:24px;height:1px;background:var(--purple)}
+.sec-h{font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(48px,7vw,110px);line-height:.88;letter-spacing:-.03em;margin-bottom:48px}
+
+.games-tabs{
+  display:flex;gap:3px;background:rgba(255,255,255,.03);
+  border:1px solid var(--border);border-radius:12px;padding:4px;
+  margin-bottom:36px;flex-wrap:wrap;
+}
+.game-tab{
+  flex:1;min-width:100px;padding:11px 14px;border-radius:8px;
+  background:transparent;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;
+  color:var(--gray);transition:all .2s;letter-spacing:.04em;
+}
+.game-tab.active{background:var(--purple);color:#fff;font-weight:500}
+.game-tab:hover:not(.active){color:var(--white);background:var(--pdim)}
+.game-panel{display:none;animation:panelIn .3s ease}
+.game-panel.active{display:block}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* CONNECTIONS */
+.conn-solved{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;min-height:0}
+.conn-solved-row{border-radius:8px;padding:12px 18px;text-align:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.conn-lives{display:flex;gap:7px;margin-bottom:14px;align-items:center}
+.conn-life{width:13px;height:13px;border-radius:50%;background:var(--purple);transition:all .3s}
+.conn-life.lost{background:var(--border2);transform:scale(.8)}
+.conn-msg{font-size:13px;color:var(--gray);min-height:18px;text-align:center;margin-bottom:10px}
+.conn-board{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:16px}
+.conn-word{
+  background:var(--card);border:1px solid var(--border2);border-radius:8px;
+  padding:18px 6px;text-align:center;font-size:12px;font-weight:500;
+  letter-spacing:.07em;text-transform:uppercase;cursor:pointer;
+  transition:all .18s;user-select:none;line-height:1.3;
+}
+.conn-word:hover{border-color:var(--purple);background:var(--pfaint)}
+.conn-word.selected{background:var(--purple2);border-color:var(--purple);color:#fff}
+.conn-word.c0{background:#22c55e;border-color:#22c55e;color:#000;cursor:default;font-weight:600}
+.conn-word.c1{background:#eab308;border-color:#eab308;color:#000;cursor:default;font-weight:600}
+.conn-word.c2{background:#3b82f6;border-color:#3b82f6;color:#fff;cursor:default;font-weight:600}
+.conn-word.c3{background:var(--purple);border-color:var(--purple);color:#fff;cursor:default;font-weight:600}
+.conn-word.wrong{animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.conn-controls{display:flex;gap:8px;flex-wrap:wrap}
+
+/* WORDLE */
+.wordle-wrap{max-width:380px;margin:0 auto}
+.wordle-grid{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}
+.wordle-row{display:flex;gap:5px}
+.wordle-cell{
+  width:52px;height:52px;border:2px solid var(--border2);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;font-size:18px;font-weight:600;
+  transition:border-color .1s,transform .1s;
+}
+.wordle-cell.has-letter{border-color:var(--purple2);transform:scale(1.04)}
+.wordle-cell.correct{background:#22c55e;border-color:#22c55e;color:#000}
+.wordle-cell.present{background:#eab308;border-color:#eab308;color:#000}
+.wordle-cell.absent{background:#2a2a2a;border-color:#2a2a2a;color:#555}
+.wordle-cell.flip{animation:flipW .45s ease forwards}
+@keyframes flipW{0%{transform:rotateX(0)}50%{transform:rotateX(-90deg)}100%{transform:rotateX(0)}}
+.wordle-msg{text-align:center;font-size:13px;color:var(--lgray);min-height:16px;margin-bottom:14px}
+.wordle-keyboard{display:flex;flex-direction:column;gap:5px;align-items:center}
+.wordle-kb-row{display:flex;gap:4px}
+.kb-key{
+  min-width:32px;height:42px;padding:0 5px;border-radius:6px;
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--white);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;
+}
+.kb-key:hover{background:var(--pdim);border-color:var(--purple)}
+.kb-key.correct{background:#22c55e;border-color:#22c55e;color:#000}
+.kb-key.present{background:#eab308;border-color:#eab308;color:#000}
+.kb-key.absent{background:#1a1a1a;border-color:#1a1a1a;color:#444}
+
+/* FREE THROW */
+.ft-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.ft-scores{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.ft-score-card{
+  background:var(--card);border:1px solid var(--border2);border-radius:10px;
+  padding:16px 24px;text-align:center;min-width:120px;
+}
+.ft-num{font-family:'Unbounded',sans-serif;font-weight:800;font-size:36px;line-height:1;color:var(--purple)}
+.ft-num.red{color:#ef4444}
+.ft-lbl{font-size:11px;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.ft-court{
+  width:100%;max-width:480px;height:320px;
+  background:linear-gradient(180deg,#0a0518 0%,#100830 60%,#150040 100%);
+  border:1px solid var(--border2);border-radius:14px;
+  position:relative;overflow:hidden;cursor:pointer;
+  user-select:none;
+}
+/* court lines */
+.ft-court::before{
+  content:'';position:absolute;bottom:0;left:10%;right:10%;height:60%;
+  border:1px solid rgba(176,110,243,.08);border-bottom:none;border-radius:40% 40% 0 0;
+}
+.ft-court::after{
+  content:'';position:absolute;bottom:0;left:30%;right:30%;height:1px;
+  background:rgba(176,110,243,.1);
+}
+.ft-backboard{
+  position:absolute;top:24px;left:50%;transform:translateX(-50%);
+  width:90px;height:56px;
+  background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:4px;
+}
+.ft-box{
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:36px;height:26px;border:1.5px solid rgba(255,255,255,.25);border-radius:2px;
+}
+.ft-rim-wrap{position:absolute;top:76px;left:50%;transform:translateX(-50%);width:60px}
+.ft-rim{
+  width:100%;height:8px;
+  background:linear-gradient(to bottom,#ff4500,#cc3300);
+  border-radius:3px;
+  box-shadow:0 0 10px rgba(255,69,0,.6);
+}
+.ft-net{
+  width:44px;height:32px;margin:0 auto;
+  border:1.5px solid rgba(255,255,255,.25);border-top:none;
+  clip-path:polygon(8% 0%,92% 0%,82% 100%,18% 100%);
+}
+.ft-ball{
+  position:absolute;
+  width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%,#fb923c,#c2410c);
+  box-shadow:0 0 0 2px rgba(0,0,0,.4),inset -4px -4px 8px rgba(0,0,0,.4);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;pointer-events:none;
+  bottom:40px;left:50%;transform:translateX(-50%);
+}
+/* basketball lines */
+.ft-ball::before{
+  content:'';position:absolute;inset:0;
+  border-radius:50%;
+  background:
+    linear-gradient(to right, transparent 48%, rgba(0,0,0,.35) 48%, rgba(0,0,0,.35) 52%, transparent 52%),
+    linear-gradient(to bottom, transparent 48%, rgba(0,0,0,.35) 48%, rgba(0,0,0,.35) 52%, transparent 52%);
+}
+.ft-court-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2)}
+.ft-power-wrap{width:100%;max-width:480px}
+.ft-power-lbl{font-size:11px;color:var(--gray);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between}
+.ft-bar-bg{width:100%;height:16px;background:var(--card);border:1px solid var(--border2);border-radius:8px;overflow:hidden;cursor:pointer;position:relative}
+.ft-bar{height:100%;width:0%;border-radius:8px;background:linear-gradient(to right,#22c55e 0%,#22c55e 45%,#eab308 55%,#ef4444 100%);transition:width .04s linear}
+.ft-sweet-zone{position:absolute;top:0;left:25%;width:40%;height:100%;background:rgba(255,255,255,.06);border-left:1px dashed rgba(34,197,94,.4);border-right:1px dashed rgba(34,197,94,.4)}
+.ft-msg{font-size:14px;color:var(--white);min-height:20px;text-align:center;font-style:italic}
+.ft-roast{font-size:12px;color:var(--gray);text-align:center;margin-top:4px;min-height:16px}
+
+/* TRIVIA */
+.trivia-wrap{max-width:580px;margin:0 auto}
+.trivia-prog-bar{width:100%;height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden}
+.trivia-prog-fill{height:100%;background:var(--purple);border-radius:2px;transition:width .4s}
+.trivia-qnum{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:10px}
+.trivia-q{font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(18px,2.5vw,26px);line-height:1.4;margin-bottom:22px}
+.trivia-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.trivia-opt{
+  background:var(--card);border:1px solid var(--border2);border-radius:10px;
+  padding:13px 18px;cursor:pointer;font-size:13px;font-weight:400;
+  transition:all .18s;text-align:left;color:var(--white);font-family:'DM Sans',sans-serif;
+}
+.trivia-opt:hover:not(:disabled){border-color:var(--purple);background:var(--pfaint);transform:translateX(4px)}
+.trivia-opt.correct{background:rgba(34,197,94,.12);border-color:#22c55e;color:#86efac}
+.trivia-opt.wrong{background:rgba(239,68,68,.1);border-color:#ef4444;color:#fca5a5}
+.trivia-opt:disabled{cursor:default;transform:none}
+.trivia-fb{font-size:13px;min-height:18px;color:var(--gray)}
+.trivia-end{text-align:center}
+.trivia-end-score{font-family:'Unbounded',sans-serif;font-weight:800;font-size:72px;color:var(--purple);line-height:1;margin:20px 0 10px}
+
+/* LYRICS */
+.lyric-wrap{max-width:540px;margin:0 auto}
+.lyric-dots{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.lyric-dot{width:9px;height:9px;border-radius:50%;background:var(--border2);transition:background .3s}
+.lyric-dot.ok{background:#22c55e}
+.lyric-dot.no{background:#ef4444}
+.lyric-artist{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+.lyric-song-name{font-size:12px;color:var(--gray);margin-bottom:18px}
+.lyric-line{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:clamp(18px,2.8vw,28px);line-height:1.5;color:var(--white);margin-bottom:24px;
+}
+.lyric-blank{
+  display:inline-block;border-bottom:2px solid var(--purple);
+  min-width:80px;padding:0 6px;color:var(--purple);font-style:normal;
+  font-family:'Unbounded',sans-serif;font-size:.7em;font-weight:600;
+}
+.lyric-row{display:flex;gap:8px;margin-bottom:12px}
+.lyric-input{
+  flex:1;background:var(--card);border:1px solid var(--border2);border-radius:8px;
+  padding:11px 16px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;
+  outline:none;transition:border-color .2s;
+}
+.lyric-input:focus{border-color:var(--purple)}
+.lyric-msg{font-size:13px;min-height:18px;margin-bottom:12px}
+.lyric-end{text-align:center}
+.lyric-end-score{font-family:'Unbounded',sans-serif;font-weight:800;font-size:64px;color:var(--purple);line-height:1;margin:16px 0 10px}
+
+/* BASKETBALL */
+.bball-scores{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+.btn{
+  background:var(--purple);color:#fff;border:none;
+  padding:11px 26px;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  cursor:pointer;transition:transform .18s,background .18s;letter-spacing:.05em;
+}
+.btn:hover{transform:translateY(-1px);background:var(--purple2)}
+.btn-ghost{
+  background:transparent;color:var(--lgray);border:1px solid var(--border2);
+  padding:11px 26px;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;
+  transition:border-color .2s,color .2s;
+}
+.btn-ghost:hover{border-color:var(--purple);color:var(--purple)}
+
+/* ── MUSIC ── */
+.music-section{background:var(--dark);padding:100px 64px;border-top:1px solid var(--border)}
+.music-inner{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:start}
+.vinyl-wrap{position:relative;width:180px;height:180px;flex-shrink:0;cursor:grab;user-select:none}
+.vinyl{
+  width:100%;height:100%;border-radius:50%;
+  background:repeating-conic-gradient(#111 0deg,#1c1c1c 3deg,#111 6deg);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 40px rgba(176,110,243,.12);
+  transition:filter .1s;
+}
+.vinyl.spinning{animation:vinylSpin 2s linear infinite}
+@keyframes vinylSpin{to{transform:rotate(360deg)}}
+.vinyl-label{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple3),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;font-size:9px;font-weight:600;
+  text-align:center;color:#fff;line-height:1.3;letter-spacing:.05em;
+}
+.vinyl-needle{
+  position:absolute;top:-10px;right:-14px;
+  width:3px;height:50px;background:linear-gradient(to bottom,var(--lgray),var(--gray));
+  border-radius:2px;transform-origin:top center;transform:rotate(28deg);
+  transition:transform .4s ease;
+}
+.vinyl-needle.playing{transform:rotate(20deg)}
+.music-right{display:flex;flex-direction:column;gap:12px}
+.music-track-title{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(24px,3.5vw,42px);letter-spacing:-.02em;margin-bottom:4px}
+.music-track-artist{font-size:14px;color:var(--gray)}
+.music-progress-wrap{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
+.music-bar-bg{flex:1;height:4px;background:var(--border2);border-radius:2px;cursor:pointer;position:relative}
+.music-bar-fill{height:100%;background:var(--purple);border-radius:2px;width:0%;transition:width .5s linear}
+.music-time{font-size:11px;color:var(--gray);font-variant-numeric:tabular-nums;min-width:32px}
+.music-controls{display:flex;gap:12px;align-items:center}
+.music-btn{background:transparent;border:none;color:var(--lgray);cursor:pointer;font-size:16px;transition:color .2s;padding:4px}
+.music-btn:hover{color:var(--purple)}
+.music-play-btn{
+  width:44px;height:44px;border-radius:50%;background:var(--purple);
+  border:none;cursor:pointer;color:#fff;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s,background .2s;
+}
+.music-play-btn:hover{transform:scale(1.08);background:var(--purple2)}
+.track-list{display:flex;flex-direction:column;gap:1px;margin-top:6px;max-height:220px;overflow-y:auto;padding-right:4px}
+.track-list::-webkit-scrollbar{width:3px}
+.track-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.track-item{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:7px;cursor:pointer;transition:background .15s}
+.track-item:hover{background:var(--pdim)}
+.track-item.active{background:var(--pfaint)}
+.track-n{font-size:11px;color:var(--gray);width:16px;text-align:right;flex-shrink:0}
+.track-info{flex:1}
+.track-name{font-size:13px;color:var(--white)}
+.track-album{font-size:11px;color:var(--gray)}
+.spotify-link{font-size:12px;color:var(--purple);text-decoration:none;margin-top:14px;display:inline-block;transition:opacity .2s}
+.spotify-link:hover{opacity:.7}
+
+/* ── LETTER ── */
+.letter-section{background:var(--black);padding:100px 64px 140px;text-align:center;border-top:1px solid var(--border)}
+.letter-hint-txt{font-size:13px;color:var(--gray);max-width:380px;margin:12px auto 0;line-height:1.7}
+.letter-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  background:transparent;border:1px solid rgba(176,110,243,.25);
+  color:var(--lgray);padding:14px 36px;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;transition:all .3s;
+}
+.letter-btn:hover{border-color:var(--purple);color:var(--purple);box-shadow:0 0 24px var(--pglow)}
+
+/* LETTER MODAL */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);
+  z-index:600;display:flex;align-items:center;justify-content:center;
+  padding:24px;opacity:0;pointer-events:none;transition:opacity .35s;
+}
+.modal-bg.open{opacity:1;pointer-events:all}
+.letter-modal{
+  background:var(--dark);border:1px solid rgba(176,110,243,.18);
+  border-radius:16px;max-width:580px;width:100%;max-height:85vh;overflow-y:auto;
+  padding:52px;position:relative;
+  transform:translateY(28px);transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.modal-bg.open .letter-modal{transform:translateY(0)}
+.modal-close{
+  position:absolute;top:18px;right:18px;background:transparent;border:none;
+  color:var(--gray);font-size:18px;cursor:pointer;transition:color .2s;
+  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{color:var(--white)}
+.letter-date-txt{font-size:11px;color:var(--gray);letter-spacing:.12em;margin-bottom:24px}
+.letter-dear{font-family:'DM Serif Display',serif;font-style:italic;font-size:22px;margin-bottom:18px}
+.letter-body{font-size:15px;line-height:1.9;color:var(--lgray);white-space:pre-line}
+.letter-sig{margin-top:32px;font-family:'DM Serif Display',serif;font-style:italic;font-size:19px;color:var(--purple)}
+
+/* ── FLOATING YOUTUBE PLAYER ── */
+.yt-float{
+  position:fixed;bottom:24px;right:24px;
+  width:300px;background:#111;border-radius:14px;
+  box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 0 1px rgba(176,110,243,.2);
+  z-index:800;overflow:hidden;
+  transform:translateY(120%);transition:transform .4s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.yt-float.open{transform:translateY(0);pointer-events:all}
+.yt-float-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:rgba(176,110,243,.12);
+}
+.yt-float-title{font-size:11px;color:var(--white);font-weight:500;letter-spacing:.05em;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-float-close{background:transparent;border:none;color:var(--gray);font-size:14px;cursor:pointer;padding:2px 4px;transition:color .2s}
+.yt-float-close:hover{color:var(--white)}
+.yt-float iframe{display:block;width:100%;height:168px;border:none}
+
+/* ── GAME DAY COUNTERS ── */
+.game-day-counter{font-size:11px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;opacity:.7;color:var(--gt-accent,var(--purple))}
+
+/* ── GAME THEME VARIABLES ── deeper, richer ── */
+.theme-tiramisu{
+  --gt-bg:#1a0f07;--gt-card:#2e1a0e;--gt-border:#6b3a2a;
+  --gt-accent:#c8956a;--gt-text:#d4a574;--gt-head:'DM Serif Display',serif;
+}
+.theme-rcb{
+  --gt-bg:#0d0000;--gt-card:#1a0000;--gt-border:#8b0000;
+  --gt-accent:#ffd700;--gt-text:#fff;--gt-head:'Unbounded',sans-serif;
+}
+.theme-beach{
+  --gt-bg:#f0e6c8;--gt-card:#fff8e7;--gt-border:#c4a35a;
+  --gt-accent:#e8a020;--gt-text:#5c3a0a;--gt-head:'DM Sans',sans-serif;
+}
+.theme-am{
+  --gt-bg:#0a0a0a;--gt-card:#141414;--gt-border:#2a2a2a;
+  --gt-accent:#cc0000;--gt-text:#fff;--gt-head:'Bebas Neue',sans-serif;
+}
+/* BASKETBALL — hardwood court theme */
+.theme-bball{
+  --gt-bg:#1a0e00;--gt-card:#2d1a00;--gt-border:#8b4500;
+  --gt-accent:#ff6b00;--gt-text:#fff8f0;--gt-head:'Unbounded',sans-serif;
+}
+.games-section.theme-tiramisu,
+.games-section.theme-rcb,
+.games-section.theme-beach,
+.games-section.theme-am,
+.games-section.theme-bball{background:var(--gt-bg)}
+.games-section.theme-tiramisu .sec-h,
+.games-section.theme-rcb .sec-h,
+.games-section.theme-am .sec-h,
+.games-section.theme-bball .sec-h{color:var(--gt-text)}
+.games-section.theme-beach .sec-h{color:#8b5e0a}
+.games-section.theme-tiramisu .sec-label,
+.games-section.theme-rcb .sec-label,
+.games-section.theme-am .sec-label,
+.games-section.theme-bball .sec-label{color:var(--gt-accent)}
+.games-section.theme-tiramisu .sec-label::after,
+.games-section.theme-rcb .sec-label::after,
+.games-section.theme-am .sec-label::after,
+.games-section.theme-bball .sec-label::after{background:var(--gt-accent)}
+.games-section.theme-beach .sec-label{color:#8b5e0a}
+.games-section.theme-beach .sec-label::after{background:#8b5e0a}
+/* Games tabs — strip purple for all themes */
+.games-section.theme-tiramisu .games-tabs{background:rgba(139,74,48,.08);border-color:var(--gt-border)}
+.games-section.theme-rcb .games-tabs{background:rgba(139,0,0,.12);border-color:#8b0000}
+.games-section.theme-am .games-tabs{background:rgba(204,0,0,.08);border-color:#2a2a2a}
+.games-section.theme-bball .games-tabs{background:rgba(255,107,0,.08);border-color:#8b4500}
+/* Game tab inactive — strip purple */
+.games-section.theme-tiramisu .game-tab{color:#c8956a}
+.games-section.theme-tiramisu .game-tab:hover:not(.active){background:rgba(200,149,106,.15);color:#d4a574}
+.games-section.theme-rcb .game-tab{color:#cc3333}
+.games-section.theme-rcb .game-tab:hover:not(.active){background:rgba(139,0,0,.2);color:#ffd700}
+.games-section.theme-am .game-tab{color:#888}
+.games-section.theme-am .game-tab:hover:not(.active){background:rgba(204,0,0,.15);color:#fff}
+.games-section.theme-bball .game-tab{color:#c87040}
+.games-section.theme-bball .game-tab:hover:not(.active){background:rgba(255,107,0,.15);color:#ffb347}
+.games-section.theme-rcb .game-tab.active{background:#8b0000;border-color:#8b0000;color:#ffd700}
+.games-section.theme-tiramisu .game-tab.active{background:#8b4a30;border-color:#8b4a30;color:#f5deb3}
+.games-section.theme-beach .game-tab.active{background:#e8a020;border-color:#e8a020;color:#fff}
+.games-section.theme-am .game-tab.active{background:#cc0000;border-color:#cc0000;color:#fff}
+.games-section.theme-bball .game-tab.active{background:#ff6b00;border-color:#ff6b00;color:#1a0e00;font-weight:600}
+/* conn-life — fix purple for rcb/beach/am/bball */
+.games-section.theme-rcb .conn-life{background:#ffd700}
+.games-section.theme-beach .conn-life{background:#e8a020}
+.games-section.theme-am .conn-life{background:#cc0000}
+.games-section.theme-bball .conn-life{background:#ff6b00}
+/* bball score cards */
+.games-section.theme-bball .ft-score-card{background:#2d1a00;border-color:#8b4500}
+.games-section.theme-bball .ft-num{color:#ff6b00}
+.games-section.theme-bball .ft-num.red{color:#ff4500}
+.games-section.theme-bball .ft-lbl{color:#c87040}
+.games-section.theme-bball .btn-ghost{color:#ffb347;border-color:#8b4500}
+.games-section.theme-bball .btn-ghost:hover{border-color:#ff6b00;color:#ff6b00}
+.games-section.theme-bball .ft-msg{color:#fff8f0}
+.games-section.theme-bball #bb-canvas{border-radius:12px;box-shadow:0 0 24px rgba(255,107,0,.15)}
+
+/* TIRAMISU — Connections theme */
+.theme-tiramisu .conn-word{background:#2e1a0e;border-color:#6b3a2a;color:#d4a574}
+.theme-tiramisu .conn-word:hover{border-color:#c8956a;background:#3d2110}
+.theme-tiramisu .conn-word.selected{background:#c8956a;border-color:#c8956a;color:#1a0f07}
+.theme-tiramisu .conn-life{background:#c8956a}
+.theme-tiramisu .conn-life.lost{background:#3d2110}
+.theme-tiramisu .conn-msg{color:#c8956a}
+.theme-tiramisu .conn-countdown{color:#c8956a}
+.theme-tiramisu .btn{background:#8b4a30;color:#f5deb3}
+.theme-tiramisu .btn:hover{background:#6b3a2a}
+.theme-tiramisu .btn-ghost{color:#c8956a;border-color:#6b3a2a}
+.theme-tiramisu .btn-ghost:hover{border-color:#c8956a;color:#d4a574}
+/* Tiramisu solved-row layers */
+.conn-solved-row.solved-biscuit{background:#f5deb3;color:#3d1f0a;border:none}
+.conn-solved-row.solved-mascarpone{background:#c8956a;color:#1a0f07;border:none}
+.conn-solved-row.solved-espresso{background:#6b3a2a;color:#f5deb3;border:none}
+.conn-solved-row.solved-cocoa{background:#1a0f07;color:#d4a574;border:1px solid #c8956a}
+
+/* RCB — Trivia theme */
+.theme-rcb .trivia-q{color:#fff}
+.theme-rcb .trivia-qnum{color:#ffd700;letter-spacing:.25em}
+.theme-rcb .trivia-prog-bar{background:#1a0000}
+.theme-rcb .trivia-prog-fill{background:#ffd700}
+.theme-rcb .trivia-opt{background:#1f0000;border-color:#cc0000;color:#fff}
+.theme-rcb .trivia-opt:hover:not(:disabled){background:#3d0000;border-color:#ffd700;color:#ffd700}
+.theme-rcb .trivia-opt.correct{background:#ffd700;border-color:#ffd700;color:#0d0000;font-weight:600}
+.theme-rcb .trivia-opt.wrong{background:#8b0000;border-color:#8b0000;color:#fff}
+.theme-rcb .trivia-fb{color:#ffd700}
+.theme-rcb .trivia-end-score{color:#ffd700}
+.theme-rcb .btn{background:#8b0000;color:#ffd700}
+.theme-rcb .btn:hover{background:#cc0000}
+
+/* BEACH — Wordle theme (sunny day, bright sand + sky, NOT underwater) */
+.theme-beach{color:#5c3a0a}
+.theme-beach .wordle-msg{color:#8b5e0a}
+.theme-beach .wordle-cell{background:#fff8e7;border-color:#c4a35a;color:#5c3a0a}
+.theme-beach .wordle-cell.has-letter{border-color:#e8a020;background:#fff}
+.theme-beach .wordle-cell.correct{background:#f4a418;border-color:#f4a418;color:#fff}
+.theme-beach .wordle-cell.present{background:#87ceeb;border-color:#87ceeb;color:#fff}
+.theme-beach .wordle-cell.absent{background:#9ab3c4;border-color:#9ab3c4;color:#fff}
+.theme-beach .kb-key{background:#fff8e7;border-color:#c4a35a;color:#5c3a0a}
+.theme-beach .kb-key:hover{background:#fff;border-color:#e8a020}
+.theme-beach .kb-key.correct{background:#f4a418;border-color:#f4a418;color:#fff}
+.theme-beach .kb-key.present{background:#87ceeb;border-color:#87ceeb;color:#fff}
+.theme-beach .kb-key.absent{background:#9ab3c4;border-color:#9ab3c4;color:#fff}
+.theme-beach .games-tabs{background:rgba(139,94,10,.06);border-color:#c4a35a}
+.theme-beach .game-tab{color:#8b5e0a}
+.theme-beach .game-tab:hover:not(.active){background:rgba(232,160,32,.15);color:#5c3a0a}
+
+/* AM — Lyric Guess (red only, no purple) */
+.theme-am .lyric-artist{color:#cc0000;letter-spacing:.25em;font-family:'Bebas Neue',sans-serif;font-size:14px}
+.theme-am .lyric-song-name{color:#888}
+.theme-am .lyric-line{font-family:'Bebas Neue',sans-serif;font-style:normal;letter-spacing:.05em;font-size:clamp(22px,3.5vw,38px);color:#fff}
+.theme-am .lyric-blank{border-bottom:2px solid #cc0000;color:#cc0000;font-family:'Bebas Neue',sans-serif}
+.theme-am .lyric-input{background:#141414;border-color:#cc0000;color:#fff}
+.theme-am .lyric-input:focus{border-color:#ff1a1a;box-shadow:0 0 12px rgba(204,0,0,.3)}
+.theme-am .lyric-dot{background:#2a2a2a}
+.theme-am .lyric-dot.ok{background:#cc0000}
+.theme-am .lyric-dot.no{background:#444}
+.theme-am .lyric-end-score{color:#cc0000}
+.theme-am .btn{background:#cc0000;color:#fff}
+.theme-am .btn:hover{background:#ff1a1a}
+
+/* ── LETTER POLAROIDS ── */
+.letter-section{position:relative}
+.letter-polaroids{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;
+}
+.letter-polaroid{
+  position:absolute;
+  background:#fff;padding:10px 10px 32px;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);
+  pointer-events:none;
+}
+.letter-polaroid img{width:100%;height:100%;object-fit:cover;display:block}
+@keyframes polFloat0{0%,100%{transform:rotate(var(--pr)) translateY(0)}50%{transform:rotate(var(--pr)) translateY(-10px)}}
+@keyframes polFloat1{0%,100%{transform:rotate(var(--pr)) translateY(0) translateX(0)}40%{transform:rotate(var(--pr)) translateY(-8px) translateX(4px)}70%{transform:rotate(var(--pr)) translateY(-12px) translateX(-3px)}}
+@keyframes polFloat2{0%,100%{transform:rotate(var(--pr)) translateY(0)}60%{transform:rotate(var(--pr)) translateY(-7px) translateX(5px)}}
+@media(max-width:900px){.letter-polaroids{display:none}}
+.letter-modal{position:relative;z-index:2}
+
+/* ── LETTER FLOAT PHOTOS (around seal) ── */
+.letter-float-photos{
+  position:absolute;inset:0;
+  pointer-events:none;overflow:hidden;
+}
+.letter-float-photo{
+  position:absolute;border-radius:12px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);
+  pointer-events:none;transition:opacity 1s ease;opacity:0;
+}
+.letter-float-photo img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:768px){.letter-float-photos{display:none}}
+
+/* ── LETTER BOTTOM PHOTO STRIP ── */
+.letter-bottom-photos{
+  display:flex;gap:10px;justify-content:center;margin-top:32px;
+  padding-top:24px;border-top:1px solid rgba(176,110,243,.12);
+  flex-wrap:wrap;
+}
+.letter-photo{
+  width:90px;height:110px;border-radius:4px;
+  background-size:cover;background-position:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+  flex-shrink:0;background-color:#222;
+}
+.letter-photo:nth-child(1){transform:rotate(-4deg)}
+.letter-photo:nth-child(2){transform:rotate(3deg)}
+.letter-photo:nth-child(3){transform:rotate(-2deg)}
+.letter-photo:nth-child(4){transform:rotate(5deg)}
+
+/* Connections countdown */
+.conn-countdown{font-size:11px;color:var(--gray);letter-spacing:.1em;margin-top:8px;text-align:center}
+
+/* FOOTER */
+footer{
+  background:var(--dark);border-top:1px solid var(--border);
+  padding:32px 52px;display:flex;justify-content:space-between;align-items:center;
+}
+.footer-logo{font-family:'Unbounded',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.02em}
+.footer-logo span{color:var(--purple)}
+.footer-r{font-size:11px;color:var(--gray)}
+
+/* ── NAV HAMBURGER ── */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;background:transparent;border:none;cursor:pointer;padding:4px;z-index:210}
+.nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--white);border-radius:2px;transition:all .3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
+.reveal.vis{opacity:1;transform:none}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}
+
+/* ── WAX SEAL ── */
+.seal-wrap{display:inline-block;position:relative;cursor:pointer}
+.seal{
+  width:72px;height:72px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%,#d4608c,#a3164a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;margin:0 auto 20px;
+  box-shadow:0 4px 20px rgba(163,22,74,.4),0 0 0 3px rgba(163,22,74,.2);
+  transition:transform .3s,box-shadow .3s;
+  animation:sealPulse 3s ease-in-out infinite;
+}
+@keyframes sealPulse{0%,100%{box-shadow:0 4px 20px rgba(163,22,74,.4),0 0 0 3px rgba(163,22,74,.2)}50%{box-shadow:0 4px 32px rgba(163,22,74,.6),0 0 0 6px rgba(163,22,74,.1)}}
+.seal:hover{transform:scale(1.08);animation:none;box-shadow:0 6px 28px rgba(163,22,74,.6),0 0 0 4px rgba(163,22,74,.3)}
+.seal.cracking{animation:sealCrack .6s ease forwards}
+@keyframes sealCrack{0%{transform:scale(1)}20%{transform:scale(1.15) rotate(-5deg)}40%{transform:scale(1.1) rotate(3deg)}60%{transform:scale(1.05) rotate(-2deg)}80%{transform:scale(.98) rotate(1deg) skew(2deg)}100%{transform:scale(0);opacity:0}}
+
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  .nav-links{
+    display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+    background:rgba(6,6,8,.97);backdrop-filter:blur(20px);
+    flex-direction:column;align-items:center;justify-content:center;
+    gap:32px;z-index:205;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:18px;letter-spacing:.2em}
+  .nav-hamburger{display:flex}
+  .hero{padding:0 24px 64px}
+  .games-section,.compliment-section,.music-section,.letter-section{padding:64px 24px}
+  .conn-board{grid-template-columns:repeat(4,1fr)}
+  .conn-word{font-size:10px;padding:12px 3px}
+  .music-inner{grid-template-columns:1fr}
+  .vinyl-wrap{margin:0 auto}
+  footer{flex-direction:column;gap:10px;text-align:center;padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur2" id="cur2"></div>
+
+<!-- SONG OF DAY -->
+<div class="sotd" id="sotd">
+  <div class="sotd-disc" id="sotd-disc"></div>
+  <div class="sotd-meta">
+    <span class="sotd-label">Song of the Day</span>
+    <span class="sotd-title" id="sotd-title">R U Mine? — Arctic Monkeys</span>
+  </div>
+  <button class="sotd-play" id="sotd-btn" onclick="sotdToggle()">▶</button>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">KAITY<span class="dot">.</span>21</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#compliment" onclick="navClose()">Today</a></li>
+    <li><a href="#games" onclick="navClose()">Games</a></li>
+    <li><a href="#music" onclick="navClose()">Music</a></li>
+    <li><a href="#letter" onclick="navClose()">Letter</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-ham" onclick="navToggle()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-photo" id="hero-photo">
+    <canvas id="photo-canvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:.32"></canvas>
+    <!-- PHOTO MOSAIC: Drop your image file names into the photoFiles array in the script below -->
+  </div>
+  <div class="hero-gradient"></div>
+  <div class="hero-particles" id="particles"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">21st Birthday</div>
+    <h1 class="hero-name">
+      KAITY<br><span class="purple">TURNS</span><br>21.
+    </h1>
+    <p class="hero-sub">Still better at basketball than the guy who made this.</p>
+    <div class="hero-scroll-row">
+      <div class="hero-scroll-line"></div>
+      <span class="hero-scroll-txt">Scroll</span>
+    </div>
+  </div>
+
+  <div class="walker-wrap">
+    <div class="walker-shadow"></div>
+    <div class="walker" id="walker">🏀</div>
+  </div>
+</section>
+
+<!-- COMPLIMENT -->
+<section class="compliment-section reveal" id="compliment">
+  <div class="comp-bg"></div>
+  <div class="comp-day" id="comp-day"></div>
+  <p class="comp-text" id="comp-text"></p>
+  <div class="comp-counter" id="comp-counter"></div>
+</section>
+
+<!-- GAMES -->
+<section class="games-section reveal" id="games">
+  <div class="sec-label">Games</div>
+  <h2 class="sec-h">Play.<br>Daily.</h2>
+
+  <div class="games-tabs">
+    <button class="game-tab active" onclick="switchTab('conn')">Connections</button>
+    <button class="game-tab" onclick="switchTab('wordle')">Wordle</button>
+    <button class="game-tab" onclick="switchTab('trivia')">Trivia</button>
+    <button class="game-tab" onclick="switchTab('lyrics')">Lyric Guess</button>
+    <button class="game-tab" onclick="switchTab('bball')">🏀 Shoot ⚗ beta</button>
+  </div>
+
+  <!-- CONNECTIONS -->
+  <div class="game-panel active" id="panel-conn">
+    <div id="conn-day-counter" class="game-day-counter"></div>
+    <div class="conn-solved" id="conn-solved"></div>
+    <div class="conn-lives" id="conn-lives"></div>
+    <div class="conn-msg" id="conn-msg">Find 4 groups of 4.</div>
+    <div class="conn-board" id="conn-board"></div>
+    <div class="conn-controls">
+      <button class="btn" onclick="connSubmit()">Submit</button>
+      <button class="btn-ghost" onclick="connShuffle()">Shuffle</button>
+      <button class="btn-ghost" onclick="connClear()">Deselect</button>
+    </div>
+    <div class="conn-countdown" id="conn-countdown"></div>
+  </div>
+
+  <!-- WORDLE -->
+  <div class="game-panel" id="panel-wordle">
+    <div class="wordle-wrap">
+      <div id="wordle-day-counter" class="game-day-counter" style="text-align:center"></div>
+      <div class="wordle-msg" id="w-msg">Guess the 6-letter word!</div>
+      <div class="wordle-grid" id="w-grid"></div>
+      <div style="margin:14px 0"></div>
+      <div class="wordle-keyboard" id="w-kb"></div>
+      <div style="text-align:center;margin-top:14px">
+        <button class="btn-ghost" onclick="initWordle()">New Word</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRIVIA -->
+  <div class="game-panel" id="panel-trivia">
+    <div class="trivia-wrap">
+      <div id="trivia-day-counter" class="game-day-counter" style="text-align:center"></div>
+      <div class="trivia-prog-bar"><div class="trivia-prog-fill" id="t-prog"></div></div>
+      <div id="trivia-body"></div>
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div class="game-panel" id="panel-lyrics">
+    <div class="lyric-wrap">
+      <div id="lyric-day-counter" class="game-day-counter"></div>
+      <div class="lyric-dots" id="l-dots"></div>
+      <div class="lyric-artist" id="l-artist"></div>
+      <div class="lyric-song-name" id="l-song"></div>
+      <div class="lyric-line" id="l-line"></div>
+      <div class="lyric-row">
+        <input class="lyric-input" id="l-input" placeholder="Missing word..." onkeydown="if(event.key==='Enter')lyricGuess()">
+        <button class="btn" onclick="lyricGuess()">Guess</button>
+      </div>
+      <div class="lyric-msg" id="l-msg"></div>
+      <div id="l-end"></div>
+    </div>
+  </div>
+
+  <!-- BASKETBALL — SIDE VIEW SLINGSHOT -->
+  <div class="game-panel" id="panel-bball">
+    <div style="text-align:center;margin-bottom:10px">
+      <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--purple);background:rgba(176,110,243,.1);padding:4px 12px;border-radius:20px;border:1px solid rgba(176,110,243,.2)">⚗ Experimental · Beta</span>
+    </div>
+    <div class="bball-scores">
+      <div class="ft-score-card"><div class="ft-num" id="bb-score">0</div><div class="ft-lbl">Score</div></div>
+      <div class="ft-score-card"><div class="ft-num red" title="Raghav tried once and hit the floor">0</div><div class="ft-lbl">Raghav's Best 💀</div></div>
+      <div class="ft-score-card"><div class="ft-num" id="bb-streak">0</div><div class="ft-lbl">Streak 🔥</div></div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--gray);margin-bottom:10px">Drag the ball back and release to shoot</div>
+    <canvas id="bb-canvas" style="display:block;margin:0 auto;border-radius:12px;cursor:crosshair;touch-action:none"></canvas>
+    <div class="ft-msg" id="bb-msg" style="text-align:center;margin-top:12px;min-height:20px;font-size:14px"></div>
+    <div style="text-align:center;margin-top:10px">
+      <button class="btn-ghost" onclick="bbReset()">Reset</button>
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC -->
+<section class="music-section reveal" id="music">
+  <div class="sec-label">Soundtrack</div>
+  <h2 class="sec-h">Rock<br>Classics.</h2>
+  <div class="music-inner" style="margin-top:36px">
+    <div class="vinyl-wrap" id="vinyl-wrap">
+      <div class="vinyl" id="vinyl">
+        <div class="vinyl-label" id="vinyl-label">AM</div>
+      </div>
+      <div class="vinyl-needle" id="needle"></div>
+    </div>
+    <div class="music-right">
+      <div class="music-track-title" id="m-title">R U Mine?</div>
+      <div class="music-track-artist" id="m-artist">Arctic Monkeys</div>
+      <div class="music-progress-wrap">
+        <span class="music-time" id="m-cur">0:00</span>
+        <div class="music-bar-bg"><div class="music-bar-fill" id="m-bar"></div></div>
+        <span class="music-time" id="m-dur">3:22</span>
+      </div>
+      <div class="music-controls">
+        <button class="music-btn" onclick="musicPrev()">⏮</button>
+        <button class="music-play-btn" id="m-play" onclick="musicToggle()">▶</button>
+        <button class="music-btn" onclick="musicNext()">⏭</button>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--gray)">Tap ▶ to stream</div>
+      <div class="track-list" id="track-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- LETTER -->
+<section class="letter-section reveal" id="letter">
+  <div class="sec-label" style="justify-content:center">From Raghav</div>
+  <h2 class="sec-h" style="margin-bottom:14px">One Last<br>Thing.</h2>
+  <p style="font-size:15px;color:var(--gray);max-width:400px;margin:0 auto 40px;line-height:1.7">Something Raghav wanted to say, just to you.</p>
+  <div class="letter-float-photos" id="letter-float-photos">
+    <!-- populated by JS from photoFiles -->
+  </div>
+  <div class="seal-wrap" onclick="sealClick()">
+    <div class="seal" id="seal">💜</div>
+  </div>
+  <p class="letter-hint-txt">Tap the seal to open.</p>
+</section>
+
+<!-- FLOATING YOUTUBE PLAYER -->
+<div class="yt-float" id="yt-float">
+  <div class="yt-float-header">
+    <span class="yt-float-title" id="yt-float-title">Song of the Day</span>
+    <button class="yt-float-close" onclick="closeYtFloat()">✕</button>
+  </div>
+  <iframe id="yt-float-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<!-- LETTER MODAL -->
+<div class="modal-bg" id="modal-bg">
+  <div class="letter-polaroids" id="letter-polaroids"></div>
+  <div class="letter-modal">
+    <button class="modal-close" onclick="closeLetter()">✕</button>
+    <div class="letter-date-txt" id="l-date"></div>
+    <div class="letter-dear">Dear Kaitlyn,</div>
+    <div class="letter-body">
+Happy 21st Birthday!<br><br>
+
+As you can see, I made this website to forever cement this moment on the internet (could be for the good or the bad, but whatever — we ball). I wanted something you can open every single day — just like your Connections, Wordle and all that — so that you can come back and remember this occasion anytime, anywhere.<br><br>
+
+In this very public document, I would just like to say a few words (can't get people to see my weak side cause I am never weak): You are a very, very strong woman. This past year you faced so many rejections on the career front and even post that you kept trying. That perseverance in you is what I admire the most. You keep showing up even though the dice might not be in your favour. You getting an internship at disrptve is a testament to your resilience.<br><br>
+
+You have won tournaments, you have won MVPs — but you have also won my heart. And you will always, no matter what, have my unwavering support.<br><br>
+
+This page is a celebration of you.
+    </div>
+    <div class="letter-sig">— Raghav 💜</div>
+    <div class="letter-bottom-photos" id="letter-bottom-photos">
+      <div class="letter-photo"></div>
+      <div class="letter-photo"></div>
+      <div class="letter-photo"></div>
+      <div class="letter-photo"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">KAITY<span>.</span>21</div>
+  <div class="footer-r">Made with 💜 by Raghav Sharma</div>
+</footer>
+
+<script>
+// ─────────────────────────────
+// CURSOR
+// ─────────────────────────────
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let cx=0,cy=0,fx=0,fy=0;
+document.addEventListener('mousemove',e=>{
+  cx=e.clientX;cy=e.clientY;
+  cur.style.left=cx+'px';cur.style.top=cy+'px';
+});
+(function loop(){fx+=(cx-fx)*.11;fy+=(cy-fy)*.11;cur2.style.left=fx+'px';cur2.style.top=fy+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.conn-word,.trivia-opt,.track-item,.ft-court').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('cur-big'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-big'));
+});
+
+// NAV SCROLL
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>60));
+
+// REVEAL
+const ro=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('vis',e.isIntersecting)),{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// ─────────────────────────────
+// PARTICLES
+// ─────────────────────────────
+const pc=document.getElementById('particles');
+for(let i=0;i<30;i++){
+  const d=document.createElement('div');
+  const sz=Math.random()*3+1;
+  d.className='particle';
+  d.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${Math.random()>.5?'var(--purple)':'#fff'};opacity:0;--op:${Math.random()*.35+.1};--dur:${Math.random()*5+4}s;animation-delay:${Math.random()*6}s`;
+  pc.appendChild(d);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// FLOATING PHOTO MOSAIC
+// ─────────────────────────────────────────────────────────────────
+// HOW TO ADD YOUR PHOTOS:
+//   Option A — Same folder: put all images in the same folder as this HTML file,
+//   then list the filenames in photoFiles below. Example:
+//     const photoFiles = ['pic1.jpg','beach.jpg','bday.png','kaitlyn.jpg'];
+//
+//   Option B — Subfolder: create a folder called "photos" next to this HTML,
+//   drop all images in there, and prefix with "photos/":
+//     const photoFiles = ['photos/pic1.jpg','photos/beach.jpg'];
+//
+//   Supports jpg, jpeg, png, webp, gif — as many as you want.
+//   If the array is empty, a subtle placeholder hint is shown instead.
+// ─────────────────────────────────────────────────────────────────
+
+const photoFiles = [
+  'photos/1.jpg','photos/2.jpg','photos/3.jpg','photos/4.jpg','photos/5.jpg',
+  'photos/6.jpg','photos/7.jpg','photos/8.jpg','photos/9.jpg','photos/10.jpg',
+  'photos/11.jpg','photos/12.jpg','photos/13.jpg','photos/14.jpg','photos/15.jpg',
+  'photos/16.jpg','photos/17.jpg','photos/18.jpg','photos/19.jpg','photos/20.jpg',
+];
+
+(function initPhotoMosaic(){
+  const container = document.getElementById('hero-photo');
+  if(photoFiles.length === 0){
+    const hint = document.createElement('div');
+    hint.className = 'photo-add-hint';
+    hint.innerHTML = `<div class="photo-add-hint-inner">
+      <p>📸 Add photos to this hero<br>
+      List filenames in <code>photoFiles</code> in the script</p>
+    </div>`;
+    container.appendChild(hint);
+    return;
+  }
+
+  const slots = [
+    // Right side cluster — far from the bottom-left text
+    {x:58, y:4,  w:220, h:280, rot:-3},
+    {x:76, y:8,  w:190, h:250, rot:4},
+    {x:64, y:44, w:210, h:200, rot:2},
+    {x:82, y:48, w:170, h:230, rot:-5},
+    // Top-centre area (above where text sits)
+    {x:38, y:3,  w:180, h:220, rot:3},
+    // Far-right edge
+    {x:88, y:28, w:160, h:210, rot:5},
+    {x:72, y:68, w:180, h:170, rot:-2},
+    // Top-left is safe (text is bottom-left)
+    {x:2,  y:4,  w:200, h:260, rot:-4},
+    {x:16, y:6,  w:170, h:220, rot:3},
+  ];
+
+  // Inject keyframes FIRST so they exist when elements animate
+  const styleEl = document.createElement('style');
+  styleEl.textContent = `
+    @keyframes photoFloat0{0%,100%{transform:rotate(var(--r,0deg)) translateY(0)}50%{transform:rotate(var(--r,0deg)) translateY(-12px)}}
+    @keyframes photoFloat1{0%,100%{transform:rotate(var(--r,0deg)) translateY(0) translateX(0)}33%{transform:rotate(var(--r,0deg)) translateY(-8px) translateX(5px)}66%{transform:rotate(var(--r,0deg)) translateY(-14px) translateX(-3px)}}
+    @keyframes photoFloat2{0%,100%{transform:rotate(var(--r,0deg)) translateY(0)}50%{transform:rotate(var(--r,0deg)) translateY(-10px) translateX(6px)}}
+  `;
+  document.head.appendChild(styleEl);
+
+  const shuffled = [...photoFiles].sort(()=>Math.random()-.5);
+  const count = Math.min(shuffled.length, slots.length);
+
+  for(let i=0; i<count; i++){
+    const s = slots[i];
+    const animName = `photoFloat${i%3}`;
+    const dur = (6 + i*0.7).toFixed(1);
+    const delay = (i*0.4).toFixed(1);
+    const div = document.createElement('div');
+    div.className = 'float-photo';
+    // Set --r as inline CSS var RIGHT HERE before appending
+    div.setAttribute('style',
+      `left:${s.x}%;top:${s.y}%;width:${s.w}px;height:${s.h}px;` +
+      `--r:${s.rot}deg;opacity:0;` +
+      `animation:${animName} ${dur}s ease-in-out ${delay}s infinite;`
+    );
+    const img = document.createElement('img');
+    img.src = shuffled[i];
+    img.alt = '';
+    img.loading = 'lazy';
+    img.onload = () => { div.style.opacity = '1'; };
+    div.appendChild(img);
+    container.appendChild(div);
+  }
+})();
+
+// ─────────────────────────────
+// WALKER (bounces basketball)
+// ─────────────────────────────
+const walker=document.getElementById('walker');
+let wPos=0,wDir=1,wBounce=0;
+(function wStep(){
+  wPos+=wDir*.4;
+  if(wPos>window.innerWidth+60){wPos=-60;}
+  wBounce+=.18;
+  const bounce=Math.abs(Math.sin(wBounce))*-12;
+  walker.style.left=wPos+'px';
+  walker.style.bottom=(8+Math.abs(Math.sin(wBounce))*14)+'px';
+  requestAnimationFrame(wStep);
+})();
+
+// ─────────────────────────────
+// SONG OF DAY
+// ─────────────────────────────
+const SONGS=[
+  {title:'R U Mine?',ytId:'hQ33wSAFBFc'},
+  {title:'Do I Wanna Know?',ytId:'bpOSxM0MsIo'},
+  {title:'505',ytId:'jv2mNatKUn8'},
+  {title:'Fluorescent Adolescent',ytId:'_9QiA3DJKiQ'},
+  {title:"I Wanna Be Yours",ytId:'ckqkMDlx-vM'},
+  {title:"Why'd You Only Call Me When You're High?",ytId:'FxFqh3TYVOA'},
+  {title:'Arabella',ytId:'UPHFWJFEpE8'},
+  {title:'Snap Out Of It',ytId:'tXH2wBT4fcc'},
+  {title:'Crying Lightning',ytId:'v_8oRWkCXyE'},
+  {title:'Cornerstone',ytId:'ZX5MRB29wyk'},
+];
+const dayIdx=Math.floor(Date.now()/86400000)%SONGS.length;
+const todaySong=SONGS[dayIdx];
+document.getElementById('sotd-title').textContent=todaySong.title+' — Arctic Monkeys';
+function sotdToggle(){
+  openYtFloat('https://www.youtube.com/embed/'+todaySong.ytId+'?autoplay=1&rel=0&modestbranding=1', todaySong.title+' — Arctic Monkeys');
+  document.getElementById('sotd-disc').classList.add('spin');
+}
+
+// ── FLOATING YOUTUBE PLAYER ──
+function openYtFloat(src, title){
+  const f=document.getElementById('yt-float');
+  const iframe=document.getElementById('yt-float-iframe');
+  document.getElementById('yt-float-title').textContent=title||'Now Playing';
+  iframe.src=src;
+  f.classList.add('open');
+}
+function closeYtFloat(){
+  document.getElementById('yt-float').classList.remove('open');
+  document.getElementById('yt-float-iframe').src='';
+  // Stop all spinning animations on close
+  const sotdDisc=document.getElementById('sotd-disc');
+  if(sotdDisc)sotdDisc.classList.remove('spin');
+  const vinyl=document.getElementById('vinyl');
+  if(vinyl)vinyl.classList.remove('spinning');
+  const needle=document.getElementById('needle');
+  if(needle)needle.classList.remove('playing');
+  mPlaying=false;
+  const playBtn=document.getElementById('m-play');
+  if(playBtn)playBtn.textContent='▶';
+}
+
+// ─────────────────────────────
+// GLOBAL DATE EPOCH
+// ─────────────────────────────
+const daysSinceEpoch = Math.max(0, Math.floor((Date.now() - new Date('2025-04-30T00:00:00').getTime()) / 86400000));
+
+// ─────────────────────────────
+// COMPLIMENT
+// ─────────────────────────────
+const COMPS=[
+  "You are my MVP forever — on and off the court.",
+  "You always make my day with your cheerful and lively personality.",
+  "You will forever be my little goat.",
+  "You will forever be my pretty princess.",
+  "You are better than Michael Jordan at basketball (except the defence — yours is effortlessly more amazing, obviously).",
+  "You are a Michelin star chef — better than Remy.",
+  "Why are you so great at all sports? Like what the fuck?",
+  "You will forever be my kiwi.",
+  "You will forever be my avocado.",
+  "You are the most humorous individual I have ever met.",
+  "You are so passionate about stuff — especially RCB. Love me sometimes.",
+  "How do you find time for everything even after watching Splitsvilla all the time?",
+  "You are so excited about the flags of the world. I love it.",
+  "You look gorgeous, every single day.",
+  "You are so autistic and I love it.",
+  "You are so patient with me and I am grateful for it.",
+  "You love the people you cherish very strongly — it's a great trait.",
+  "You are so cute. I love when you act like a child.",
+  "You are so good at learning and studying, it's scary — you literally take half the time to study as me and still score more.",
+  "You are the most avid reader I have ever met.",
+  "You are a very strong, ambitious and brave girl — you will achieve everything you want to in life.",
+];
+function loadComp(){
+  const april30=new Date('2025-04-30T00:00:00').getTime();
+  const dayIndex=Math.floor((Date.now()-april30)/86400000);
+  const idx=((dayIndex%COMPS.length)+COMPS.length)%COMPS.length;
+  document.getElementById('comp-text').textContent=COMPS[idx];
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('comp-day').textContent=days[new Date().getDay()]+' · a note from Raghav';
+  const dayOfCycle=(daysSinceEpoch%21)+1;
+  document.getElementById('comp-counter').textContent=`Day ${dayOfCycle} of 21 · come back daily`;
+}
+loadComp();
+
+// ─────────────────────────────
+// GAME TAB SWITCH
+// ─────────────────────────────
+function switchTab(id){
+  const ids=['conn','wordle','trivia','lyrics','bball'];
+  document.querySelectorAll('.game-tab').forEach((t,i)=>t.classList.toggle('active',ids[i]===id));
+  document.querySelectorAll('.game-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  // Color theme per tab
+  const sec=document.getElementById('games');
+  sec.classList.remove('theme-tiramisu','theme-rcb','theme-beach','theme-am','theme-bball');
+  const themes={conn:'theme-tiramisu',trivia:'theme-rcb',wordle:'theme-beach',lyrics:'theme-am',bball:'theme-bball'};
+  if(themes[id])sec.classList.add(themes[id]);
+}
+
+// ─────────────────────────────
+// CONNECTIONS — 50 puzzle pool, date-seeded daily
+// ─────────────────────────────
+// Difficulty: 0=easiest (biscuit), 1=mascarpone, 2=espresso, 3=cocoa(hardest)
+const CONN_PUZZLES=[
+  // Real NYT puzzles
+  {groups:[
+    {cat:"FOUND IN THE TRUNK OF A CAR",words:["ICE SCRAPER","JACK","JUMPER CABLES","SPARE TIRE"],diff:0},
+    {cat:"U.S. CITY NICKNAMES",words:["BIG APPLE","BIG EASY","MILE HIGH","SECOND CITY"],diff:1},
+    {cat:"U.S. STATE ABBREVIATIONS",words:["MASS","MISS","PENN","WASH"],diff:2},
+    {cat:"FOODS NOT ACTUALLY FOODS",words:["COPYPASTA","HAMBURGER","KNUCKLE","LICORICE"],diff:3}
+  ]},
+  {groups:[
+    {cat:"STOCKY",words:["HUSKY","SOLID","SQUAT","THICK"],diff:0},
+    {cat:"STEER",words:["DIRECT","GUIDE","LEAD","SHEPHERD"],diff:1},
+    {cat:"WORDS AFTER 'THE' IN POE STORIES",words:["CASK","FALL","MASQUE","PIT"],diff:2},
+    {cat:"ORGAN PLUS A LETTER",words:["COLONY","HEART","LUNGE","SKINK"],diff:3}
+  ]},
+  {groups:[
+    {cat:"FUNNY PERSON",words:["CLOWN","JOKER","LAUGH","RIOT"],diff:0},
+    {cat:"KINDS OF TOMATOES",words:["CHERRY","GRAPE","PLUM","ROMA"],diff:1},
+    {cat:"BEST ACTRESS WINNERS",words:["BERRY","MADISON","STONE","SWANK"],diff:2},
+    {cat:"END WITH SYNONYMS FOR LOCATION",words:["COMMONPLACE","NEEDLEPOINT","PARASITE","SUNSPOT"],diff:3}
+  ]},
+  {groups:[
+    {cat:"YOU BET",words:["ABSOLUTELY","OKEY-DOKE","OF COURSE","SURE THING"],diff:0},
+    {cat:"FORBIDDEN",words:["OFF-LIMITS","PROSCRIBED","TABOO","VERBOTEN"],diff:1},
+    {cat:"BASKETBALL SHOTS",words:["ALLEY-OOP","FADEAWAY","FINGER ROLL","SLAM DUNK"],diff:2},
+    {cat:"START WITH SYNONYMS FOR SCRAM",words:["GO-GETTER","LEAVENING","SCATTERGORIES","SHOO-IN"],diff:3}
+  ]},
+  {groups:[
+    {cat:"TECHNIQUE",words:["APPROACH","METHOD","PHILOSOPHY","SCHOOL"],diff:0},
+    {cat:"RUN-OF-THE-MILL",words:["BANAL","EVERYDAY","HUMDRUM","PEDESTRIAN"],diff:1},
+    {cat:"STRIPY THINGS",words:["BARCODE","IBM LOGO","RUGBY SHIRT","ZEBRA"],diff:2},
+    {cat:"WORDS ON MONOPOLY SQUARES",words:["AVENUE","PARKING","RAILROAD","TAX"],diff:3}
+  ]},
+  {groups:[
+    {cat:"INTO IT",words:["DOWN","EAGER","GAME","WILLING"],diff:0},
+    {cat:"FURNISH",words:["EQUIP","OUTFIT","PREPARE","READY"],diff:1},
+    {cat:"ORGS WITH STARS IN LOGOS",words:["NASA","NFL","PARAMOUNT","SUBARU"],diff:2},
+    {cat:"HOMOPHONES OF GENESIS FIGURES",words:["ABLE","CANE","EAVE","NOAA"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BLOWIN' IN THE WIND",words:["FLAG","PINWHEEL","VANE","WIND CHIME"],diff:0},
+    {cat:"CHANGE ONE'S TUNE",words:["ABOUT-FACE","BACKPEDAL","FLIP-FLOP","RENEGE"],diff:1},
+    {cat:"CRAM",words:["JAM","SHOEHORN","STUFF","WEDGE"],diff:2},
+    {cat:"LAST WORDS IN KIDS' SHOW TITLES",words:["KANGAROO","NEIGHBORHOOD","RAINBOW","STREET"],diff:3}
+  ]},
+  {groups:[
+    {cat:"KEEP TABS ON",words:["FOLLOW","MONITOR","TRACK","WATCH"],diff:0},
+    {cat:"ONE IN A DOZEN",words:["DONUT","JUROR","MONTH","ROSE"],diff:1},
+    {cat:"THINGS WITH INK",words:["PEN","PRINTER","SQUID","TATTOO"],diff:2},
+    {cat:"___ RABBIT",words:["ROGER","TRIX","VELVETEEN","WHITE"],diff:3}
+  ]},
+  {groups:[
+    {cat:"FLOORING OPTIONS",words:["CARPET","LAMINATE","TILE","WOOD"],diff:0},
+    {cat:"BEACHY AREA",words:["BANK","COAST","SHORE","STRAND"],diff:1},
+    {cat:"ROMANTIC VIBE",words:["CHEMISTRY","CONNECTION","FIREWORKS","SPARK"],diff:2},
+    {cat:"BACKING BAND MEMBERS",words:["BANSHEE","HEARTBREAKER","PIP","WAILER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"CHESS PIECES",words:["BISHOP","KING","KNIGHT","ROOK"],diff:0},
+    {cat:"THINGS THAT ARE TWISTED",words:["ANKLE","LOGIC","PLOT","WIRE"],diff:1},
+    {cat:"___ POOL",words:["CAR","DEAD","GENE","SWIMMING"],diff:2},
+    {cat:"PALINDROMES",words:["KAYAK","LEVEL","RACECAR","RADAR"],diff:3}
+  ]},
+  // Music / band themed (Kaity-specific)
+  {groups:[
+    {cat:"ARCTIC MONKEYS ALBUMS",words:["HUMBUG","AM","TRANQUILITY","WHATEVER"],diff:0},
+    {cat:"AM SONGS",words:["R U MINE","505","ARABELLA","CORNERSTONE"],diff:1},
+    {cat:"OASIS SINGLES",words:["WONDERWALL","SUPERNOVA","LIVE FOREVER","STAND BY ME"],diff:2},
+    {cat:"QUEEN SONGS",words:["BOHEMIAN","RADIO GA GA","KILLER QUEEN","SOMEBODY"],diff:3}
+  ]},
+  {groups:[
+    {cat:"NIRVANA SONGS",words:["LITHIUM","COME AS YOU ARE","HEART-SHAPED BOX","IN BLOOM"],diff:0},
+    {cat:"GREEN DAY ALBUMS",words:["DOOKIE","NIMROD","INSOMNIAC","WARNING"],diff:1},
+    {cat:"BEATLES ALBUMS",words:["ABBEY ROAD","REVOLVER","HELP","RUBBER SOUL"],diff:2},
+    {cat:"BOHEMIAN RHAPSODY WORDS",words:["BISMILLAH","FANDANGO","GALILEO","SCARAMOUCHE"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BANDS FROM SHEFFIELD",words:["ARCTIC MONKEYS","DEF LEPPARD","HUMAN LEAGUE","PULP"],diff:0},
+    {cat:"BANDS FROM MANCHESTER",words:["JOY DIVISION","OASIS","STONE ROSES","THE SMITHS"],diff:1},
+    {cat:"GRUNGE BANDS",words:["ALICE IN CHAINS","NIRVANA","PEARL JAM","SOUNDGARDEN"],diff:2},
+    {cat:"GLAM ROCK ACTS",words:["BOWIE","QUEEN","T REX","SWEET"],diff:3}
+  ]},
+  {groups:[
+    {cat:"TYPES OF GUITAR",words:["ACOUSTIC","BASS","ELECTRIC","TWELVE-STRING"],diff:0},
+    {cat:"STUDIO EQUIPMENT",words:["BOOTH","FADER","MIC STAND","MIXING DESK"],diff:1},
+    {cat:"GIG ACTIONS",words:["CROWD SURF","HEADBANG","MOSH","STAGE DIVE"],diff:2},
+    {cat:"FESTIVAL STAGES",words:["MAIN","PYRAMID","TENT","THE OTHER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"MERCH ITEMS",words:["HOODIE","LANYARD","POSTER","TEE"],diff:0},
+    {cat:"SONGS WITH 21 IN TITLE",words:["21 GUNS","21 QUESTIONS","21 SECONDS","21 SAVAGE"],diff:1},
+    {cat:"BIRTHDAY PARTY ITEMS",words:["BALLOONS","CAKE","CANDLES","STREAMERS"],diff:2},
+    {cat:"21 THINGS",words:["BLACKJACK","DRINKING","SALUTE","JUMP"],diff:3}
+  ]},
+  {groups:[
+    {cat:"ALEX TURNER WARDROBE",words:["QUIFF","LEATHER JACKET","CHELSEA BOOTS","SKINNY TIE"],diff:0},
+    {cat:"COMING OF AGE",words:["LEGAL","ADULT","KEY OF DOOR","COME OF AGE"],diff:1},
+    {cat:"OUTRO WORDS",words:["FADE OUT","REPEAT","REPRISE","VAMP"],diff:2},
+    {cat:"CHART POSITIONS",words:["BULLET","CLIMBER","ENTRY","RE-ENTRY"],diff:3}
+  ]},
+  // General knowledge themed
+  {groups:[
+    {cat:"SHADES OF BLUE",words:["AZURE","CERULEAN","COBALT","NAVY"],diff:0},
+    {cat:"THINGS WITH KEYS",words:["CAR","KEYBOARD","PIANO","SAFE"],diff:1},
+    {cat:"___ STONE",words:["COBBLE","CORNER","KIDNEY","ROLLING"],diff:2},
+    {cat:"ROCK MUSIC PUNS",words:["ALBUM ROCKS","STONE COLD","ROCK SOLID","ON THE ROCKS"],diff:3}
+  ]},
+  {groups:[
+    {cat:"TYPES OF PASTA",words:["FARFALLE","PENNE","RIGATONI","TAGLIATELLE"],diff:0},
+    {cat:"FAST THINGS",words:["CHEETAH","FALCON","FERRARI","LIGHTNING"],diff:1},
+    {cat:"___ LIGHT",words:["FLASH","MOON","STAR","TWI"],diff:2},
+    {cat:"LONDON TUBE LINES",words:["BAKERLOO","CENTRAL","JUBILEE","VICTORIA"],diff:3}
+  ]},
+  {groups:[
+    {cat:"COFFEE DRINKS",words:["AMERICANO","FLAT WHITE","LATTE","MACCHIATO"],diff:0},
+    {cat:"ITALIAN DESSERTS",words:["CANNOLI","PANNA COTTA","TIRAMISU","ZABAGLIONE"],diff:1},
+    {cat:"COFFEE ORIGINS",words:["ETHIOPIA","INDONESIA","COLOMBIA","KENYA"],diff:2},
+    {cat:"ESPRESSO LAYERS",words:["BODY","CREMA","FOAM","HEART"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BREAKFAST FOODS",words:["BACON","CEREAL","TOAST","WAFFLES"],diff:0},
+    {cat:"TYPES OF EGGS",words:["BOILED","FRIED","POACHED","SCRAMBLED"],diff:1},
+    {cat:"CITRUS FRUITS",words:["LEMON","LIME","ORANGE","POMELO"],diff:2},
+    {cat:"BREAKFAST ___",words:["CLUB","NOOK","BAR","TABLE"],diff:3}
+  ]},
+  {groups:[
+    {cat:"DOG BREEDS",words:["BEAGLE","COLLIE","HUSKY","POODLE"],diff:0},
+    {cat:"BIG CATS",words:["JAGUAR","LEOPARD","LION","TIGER"],diff:1},
+    {cat:"FARM ANIMALS",words:["COW","GOAT","PIG","SHEEP"],diff:2},
+    {cat:"ANIMALS IN IDIOMS",words:["BIRD","BULL","BUG","FISH"],diff:3}
+  ]},
+  {groups:[
+    {cat:"TYPES OF MOVIES",words:["ACTION","COMEDY","HORROR","ROMANCE"],diff:0},
+    {cat:"OSCAR CATEGORIES",words:["ACTOR","DIRECTOR","PICTURE","SCREENPLAY"],diff:1},
+    {cat:"FILM CREW ROLES",words:["EDITOR","GAFFER","GRIP","PRODUCER"],diff:2},
+    {cat:"MOVIE THEATRE ITEMS",words:["NACHOS","POPCORN","SODA","TICKET"],diff:3}
+  ]},
+  {groups:[
+    {cat:"KITCHEN UTENSILS",words:["LADLE","SPATULA","TONGS","WHISK"],diff:0},
+    {cat:"COOKING METHODS",words:["BAKE","FRY","ROAST","STEAM"],diff:1},
+    {cat:"SPICES",words:["CINNAMON","CUMIN","PAPRIKA","TURMERIC"],diff:2},
+    {cat:"HERBS",words:["BASIL","MINT","OREGANO","THYME"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BOARD GAMES",words:["CHESS","CLUE","MONOPOLY","SCRABBLE"],diff:0},
+    {cat:"CARD GAMES",words:["BRIDGE","POKER","RUMMY","SOLITAIRE"],diff:1},
+    {cat:"VIDEO GAME GENRES",words:["FPS","MMO","RPG","RTS"],diff:2},
+    {cat:"PUZZLE TYPES",words:["CROSSWORD","JIGSAW","SUDOKU","WORDLE"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BODIES OF WATER",words:["LAKE","OCEAN","RIVER","STREAM"],diff:0},
+    {cat:"MOUNTAIN FEATURES",words:["CLIFF","PEAK","RIDGE","SUMMIT"],diff:1},
+    {cat:"DESERT THINGS",words:["CACTUS","DUNE","MIRAGE","OASIS"],diff:2},
+    {cat:"FOREST WORDS",words:["CANOPY","CLEARING","GLADE","UNDERSTORY"],diff:3}
+  ]},
+  {groups:[
+    {cat:"WAYS TO TRAVEL",words:["BUS","CAR","PLANE","TRAIN"],diff:0},
+    {cat:"AIRPORT THINGS",words:["GATE","RUNWAY","TERMINAL","TOWER"],diff:1},
+    {cat:"LUGGAGE TYPES",words:["BACKPACK","CARRY-ON","DUFFEL","SUITCASE"],diff:2},
+    {cat:"___ JET",words:["JUMBO","PRIVATE","TURBO","WATER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"COLLEGE THINGS",words:["DORM","EXAM","LECTURE","THESIS"],diff:0},
+    {cat:"DEGREE TYPES",words:["BA","MA","PHD","BSC"],diff:1},
+    {cat:"STATIONERY",words:["ERASER","NOTEBOOK","PEN","RULER"],diff:2},
+    {cat:"GRADUATION ITEMS",words:["CAP","DIPLOMA","GOWN","TASSEL"],diff:3}
+  ]},
+  {groups:[
+    {cat:"SHIRT PARTS",words:["BUTTON","COLLAR","CUFF","SLEEVE"],diff:0},
+    {cat:"SHOE TYPES",words:["BOOT","HEEL","SANDAL","SNEAKER"],diff:1},
+    {cat:"JEWELRY",words:["BRACELET","NECKLACE","RING","WATCH"],diff:2},
+    {cat:"FABRICS",words:["COTTON","DENIM","SILK","WOOL"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BAKING NEEDS",words:["BUTTER","FLOUR","SUGAR","YEAST"],diff:0},
+    {cat:"DESSERT TYPES",words:["BROWNIE","COOKIE","MUFFIN","PIE"],diff:1},
+    {cat:"ICE CREAM FLAVOURS",words:["CHOCOLATE","MINT","STRAWBERRY","VANILLA"],diff:2},
+    {cat:"CHOCOLATE BARS",words:["KITKAT","MARS","SNICKERS","TWIX"],diff:3}
+  ]},
+  {groups:[
+    {cat:"SLEEP RELATED",words:["DREAM","NAP","REST","SNORE"],diff:0},
+    {cat:"BED THINGS",words:["BLANKET","MATTRESS","PILLOW","SHEET"],diff:1},
+    {cat:"NIGHT SKY",words:["MOON","PLANET","SATELLITE","STAR"],diff:2},
+    {cat:"INSOMNIA REMEDIES",words:["LAVENDER","MELATONIN","TEA","WARM MILK"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BODY PARTS",words:["ARM","ELBOW","HAND","SHOULDER"],diff:0},
+    {cat:"FACE PARTS",words:["CHEEK","EYEBROW","LIP","NOSE"],diff:1},
+    {cat:"SKELETAL TERMS",words:["CARTILAGE","LIGAMENT","TENDON","BONE"],diff:2},
+    {cat:"ORGANS",words:["HEART","KIDNEY","LIVER","LUNG"],diff:3}
+  ]},
+  {groups:[
+    {cat:"WEATHER TYPES",words:["RAIN","SNOW","SUN","WIND"],diff:0},
+    {cat:"STORM RELATED",words:["HAIL","HURRICANE","LIGHTNING","THUNDER"],diff:1},
+    {cat:"CLOUD TYPES",words:["CIRRUS","CUMULUS","NIMBUS","STRATUS"],diff:2},
+    {cat:"SEASONS",words:["AUTUMN","SPRING","SUMMER","WINTER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"TYPES OF FLOWER",words:["DAISY","LILY","ROSE","TULIP"],diff:0},
+    {cat:"GARDEN TOOLS",words:["HOE","RAKE","SHOVEL","SPADE"],diff:1},
+    {cat:"PLANT PARTS",words:["LEAF","ROOT","STEM","TRUNK"],diff:2},
+    {cat:"TREE TYPES",words:["MAPLE","OAK","PINE","WILLOW"],diff:3}
+  ]},
+  {groups:[
+    {cat:"PRECIOUS STONES",words:["DIAMOND","EMERALD","RUBY","SAPPHIRE"],diff:0},
+    {cat:"METALS",words:["BRONZE","COPPER","GOLD","SILVER"],diff:1},
+    {cat:"___ AGE",words:["BRONZE","ICE","IRON","STONE"],diff:2},
+    {cat:"OLYMPIC MEDALS",words:["BRONZE","GOLD","SILVER","PLATINUM"],diff:3}
+  ]},
+  {groups:[
+    {cat:"DAYS OF WEEK",words:["FRIDAY","MONDAY","TUESDAY","WEDNESDAY"],diff:0},
+    {cat:"MONTHS",words:["APRIL","JUNE","MARCH","NOVEMBER"],diff:1},
+    {cat:"TIME UNITS",words:["DECADE","HOUR","MINUTE","WEEK"],diff:2},
+    {cat:"CLOCK PARTS",words:["FACE","HAND","HOUR","PENDULUM"],diff:3}
+  ]},
+  {groups:[
+    {cat:"HOUSEHOLD ROOMS",words:["BEDROOM","KITCHEN","LIVING","STUDY"],diff:0},
+    {cat:"FURNITURE",words:["CHAIR","DESK","SOFA","TABLE"],diff:1},
+    {cat:"BATHROOM ITEMS",words:["MIRROR","SINK","TOILET","TOWEL"],diff:2},
+    {cat:"KITCHEN APPLIANCES",words:["BLENDER","FRIDGE","OVEN","TOASTER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BIRDS",words:["EAGLE","HAWK","OWL","ROBIN"],diff:0},
+    {cat:"OCEAN ANIMALS",words:["DOLPHIN","SHARK","WHALE","SEAL"],diff:1},
+    {cat:"INSECTS",words:["ANT","BEE","FLY","WASP"],diff:2},
+    {cat:"REPTILES",words:["GECKO","IGUANA","SNAKE","TURTLE"],diff:3}
+  ]},
+  {groups:[
+    {cat:"COLOURS",words:["BLUE","GREEN","RED","YELLOW"],diff:0},
+    {cat:"WARM COLOURS",words:["AMBER","CORAL","CRIMSON","SCARLET"],diff:1},
+    {cat:"COOL COLOURS",words:["AQUA","INDIGO","TEAL","TURQUOISE"],diff:2},
+    {cat:"PASTEL SHADES",words:["BLUSH","LAVENDER","MINT","PEACH"],diff:3}
+  ]},
+  {groups:[
+    {cat:"EMOTIONS",words:["ANGER","FEAR","HAPPY","SAD"],diff:0},
+    {cat:"FEELING WORDS",words:["BLISS","DREAD","JOY","SORROW"],diff:1},
+    {cat:"MOOD WORDS",words:["CHEERFUL","CRANKY","GLOOMY","SUNNY"],diff:2},
+    {cat:"FEELING + LY",words:["EAGERLY","HAPPILY","SADLY","WARMLY"],diff:3}
+  ]},
+  {groups:[
+    {cat:"OLYMPIC SPORTS",words:["DIVING","FENCING","JUDO","ROWING"],diff:0},
+    {cat:"BALL SPORTS",words:["CRICKET","FOOTBALL","RUGBY","TENNIS"],diff:1},
+    {cat:"WATER SPORTS",words:["KAYAKING","SAILING","SURFING","SWIMMING"],diff:2},
+    {cat:"WINTER SPORTS",words:["CURLING","HOCKEY","SKIING","SLEDDING"],diff:3}
+  ]},
+  {groups:[
+    {cat:"TENNIS GRAND SLAMS",words:["AUSTRALIAN","FRENCH","US","WIMBLEDON"],diff:0},
+    {cat:"FOOTBALL POSITIONS",words:["DEFENDER","FORWARD","GOALIE","MIDFIELDER"],diff:1},
+    {cat:"BASEBALL TERMS",words:["BUNT","HOMERUN","INNING","STRIKE"],diff:2},
+    {cat:"BOXING TERMS",words:["HOOK","JAB","KNOCKOUT","UPPERCUT"],diff:3}
+  ]},
+  {groups:[
+    {cat:"FAMOUS PAINTERS",words:["MONET","PICASSO","REMBRANDT","VAN GOGH"],diff:0},
+    {cat:"ART MOVEMENTS",words:["BAROQUE","CUBISM","IMPRESSIONISM","ROMANTICISM"],diff:1},
+    {cat:"ART SUPPLIES",words:["BRUSH","CANVAS","EASEL","PALETTE"],diff:2},
+    {cat:"FAMOUS PAINTINGS",words:["MONA LISA","SCREAM","STARRY NIGHT","WATER LILIES"],diff:3}
+  ]},
+  {groups:[
+    {cat:"WORLD CAPITALS",words:["LONDON","PARIS","ROME","TOKYO"],diff:0},
+    {cat:"AFRICAN CAPITALS",words:["CAIRO","LAGOS","NAIROBI","RABAT"],diff:1},
+    {cat:"ASIAN CAPITALS",words:["BANGKOK","HANOI","SEOUL","TAIPEI"],diff:2},
+    {cat:"CITIES NOT CAPITALS",words:["MUMBAI","NEW YORK","SHANGHAI","SYDNEY"],diff:3}
+  ]},
+  {groups:[
+    {cat:"DRINKING WORDS",words:["GULP","SIP","SLURP","SWIG"],diff:0},
+    {cat:"COCKTAILS",words:["MARGARITA","MARTINI","MOJITO","NEGRONI"],diff:1},
+    {cat:"WINE TYPES",words:["CHARDONNAY","MERLOT","RIESLING","SHIRAZ"],diff:2},
+    {cat:"BAR TOOLS",words:["JIGGER","MUDDLER","SHAKER","STRAINER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"ZODIAC SIGNS",words:["ARIES","LEO","VIRGO","TAURUS"],diff:0},
+    {cat:"PLANETS",words:["EARTH","JUPITER","MARS","SATURN"],diff:1},
+    {cat:"CONSTELLATIONS",words:["ORION","PEGASUS","SCORPIO","URSA"],diff:2},
+    {cat:"GALAXY TYPES",words:["ELLIPTICAL","IRREGULAR","LENTICULAR","SPIRAL"],diff:3}
+  ]},
+  {groups:[
+    {cat:"COMPUTER PARTS",words:["KEYBOARD","MONITOR","MOUSE","SCREEN"],diff:0},
+    {cat:"INTERNET WORDS",words:["BROWSER","EMAIL","WEBSITE","WIFI"],diff:1},
+    {cat:"PROGRAMMING LANGUAGES",words:["JAVA","PYTHON","RUBY","RUST"],diff:2},
+    {cat:"CLOUD SERVICES",words:["AWS","AZURE","DROPBOX","ICLOUD"],diff:3}
+  ]},
+  {groups:[
+    {cat:"FAIRY TALE ITEMS",words:["APPLE","CARRIAGE","SLIPPER","WAND"],diff:0},
+    {cat:"DISNEY PRINCESSES",words:["ARIEL","BELLE","JASMINE","MOANA"],diff:1},
+    {cat:"MAGICAL CREATURES",words:["DRAGON","FAIRY","UNICORN","WIZARD"],diff:2},
+    {cat:"CINDERELLA THINGS",words:["FAIRY GODMOTHER","MIDNIGHT","PUMPKIN","SLIPPER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"CHRISTMAS THINGS",words:["CAROL","SLEIGH","STOCKING","TREE"],diff:0},
+    {cat:"HALLOWEEN ITEMS",words:["COSTUME","PUMPKIN","SKELETON","WITCH"],diff:1},
+    {cat:"WEDDING ITEMS",words:["ALTAR","BOUQUET","CAKE","RING"],diff:2},
+    {cat:"PARTY ITEMS",words:["CONFETTI","DJ","GIFT","TOAST"],diff:3}
+  ]},
+  {groups:[
+    {cat:"MARTIAL ARTS",words:["JUDO","KARATE","KUNG FU","TAEKWONDO"],diff:0},
+    {cat:"DANCE STYLES",words:["BALLET","SALSA","TANGO","WALTZ"],diff:1},
+    {cat:"YOGA POSES",words:["COBRA","DOWNWARD DOG","TREE","WARRIOR"],diff:2},
+    {cat:"FITNESS WORDS",words:["CARDIO","CRUNCH","LUNGE","SQUAT"],diff:3}
+  ]},
+  {groups:[
+    {cat:"SCHOOL SUBJECTS",words:["ENGLISH","HISTORY","MATH","SCIENCE"],diff:0},
+    {cat:"TYPES OF BOOK",words:["FICTION","MEMOIR","NOVEL","TEXTBOOK"],diff:1},
+    {cat:"LIBRARY THINGS",words:["BOOKMARK","CARD","SHELF","STACKS"],diff:2},
+    {cat:"PUBLISHING TERMS",words:["AUTHOR","EDITOR","ISBN","PUBLISHER"],diff:3}
+  ]},
+  {groups:[
+    {cat:"BIRTHDAY WISHES",words:["CHEERS","CONGRATS","HOORAY","HURRAH"],diff:0},
+    {cat:"GIFT TYPES",words:["BOOK","FLOWERS","JEWELRY","PERFUME"],diff:1},
+    {cat:"21ST GIFTS",words:["KEY","SHOT GLASS","TIARA","WALLET"],diff:2},
+    {cat:"KAITY THINGS",words:["BASKETBALL","RCB","ARCTIC MONKEYS","TIRAMISU"],diff:3}
+  ]}
+];
+
+function buildConnPuzzle(){
+  const april30=new Date('2025-04-30T00:00:00').getTime();
+  const dayIndex=Math.max(0,Math.floor((Date.now()-april30)/86400000));
+  const idx=dayIndex%CONN_PUZZLES.length;
+  return CONN_PUZZLES[idx].groups;
+}
+
+let cPuzzle=[],cSolved=[],cSelected=[],cLives=4,cDone=false;
+function initConn(){
+  const groups=buildConnPuzzle();
+  // Convert {cat,words,diff} -> internal shape compatible with existing render fns
+  cPuzzle=groups.map(g=>({name:g.cat,words:g.words,diff:g.diff}));
+  cSolved=[];cSelected=[];cLives=4;cDone=false;
+  document.getElementById('conn-solved').innerHTML='';
+  document.getElementById('conn-msg').textContent='Find 4 groups of 4.';
+  // Day counter
+  const connDay=daysSinceEpoch%CONN_PUZZLES.length+1;
+  const connCounter=document.getElementById('conn-day-counter');
+  if(connCounter)connCounter.textContent=`Puzzle #${connDay} of ${CONN_PUZZLES.length} · resets at midnight`;
+  renderConnLives();renderConnBoard();
+  startConnCountdown();
+}
+function startConnCountdown(){
+  function tick(){
+    const now=new Date();
+    const midnight=new Date(now);
+    midnight.setHours(24,0,0,0);
+    const diff=midnight-now;
+    const h=String(Math.floor(diff/3600000)).padStart(2,'0');
+    const m=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    const s=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    const el=document.getElementById('conn-countdown');
+    if(el)el.textContent=`Next puzzle in ${h}:${m}:${s}`;
+  }
+  tick();
+  setInterval(tick,1000);
+}
+function renderConnLives(){
+  const el=document.getElementById('conn-lives');el.innerHTML='';
+  for(let i=0;i<4;i++){const d=document.createElement('div');d.className='conn-life'+(i>=cLives?' lost':'');el.appendChild(d);}
+}
+function renderConnBoard(){
+  const el=document.getElementById('conn-board');el.innerHTML='';
+  const words=cPuzzle.flatMap((c,ci)=>c.words.filter((_,wi)=>!cSolved.some(s=>s.cat===ci)).map(w=>({w,ci})));
+  for(let i=words.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[words[i],words[j]]=[words[j],words[i]];}
+  words.forEach(({w,ci})=>{
+    const d=document.createElement('div');
+    d.className='conn-word'+(cSelected.includes(w)?' selected':'');
+    d.textContent=w;
+    d.onclick=()=>{
+      if(cDone)return;
+      cSelected.includes(w)?cSelected.splice(cSelected.indexOf(w),1):cSelected.length<4&&cSelected.push(w);
+      renderConnBoard();
+    };
+    el.appendChild(d);
+  });
+}
+function connSubmit(){
+  if(cSelected.length!==4||cDone)return;
+  const match=cPuzzle.findIndex((c,ci)=>!cSolved.some(s=>s.cat===ci)&&cSelected.every(w=>c.words.includes(w)));
+  if(match!==-1){
+    cSolved.push({cat:match});
+    const cat=cPuzzle[match];
+    const row=document.createElement('div');
+    // Tiramisu solved-row layer based on difficulty
+    const layerClass=['solved-biscuit','solved-mascarpone','solved-espresso','solved-cocoa'][cat.diff||0];
+    row.className='conn-solved-row '+layerClass;
+    row.innerHTML=`<strong>${cat.name}</strong><br><small style="opacity:.75">${cat.words.join(' · ')}</small>`;
+    document.getElementById('conn-solved').appendChild(row);
+    cSelected=[];
+    document.getElementById('conn-msg').textContent=cSolved.length===4?'🎉 All four! You got it.':'Nice! Keep going.';
+    if(cSolved.length===4)cDone=true;
+    renderConnBoard();
+  } else {
+    cLives--;renderConnLives();
+    document.querySelectorAll('.conn-word.selected').forEach(el=>{el.classList.add('wrong');setTimeout(()=>el.classList.remove('wrong'),350)});
+    cSelected=[];
+    document.getElementById('conn-msg').textContent=cLives?`Not quite — ${cLives} mistake${cLives===1?'':'s'} left.`:'No more attempts. Come back tomorrow.';
+    if(!cLives)cDone=true;
+    renderConnBoard();
+  }
+}
+function connShuffle(){cSelected=[];renderConnBoard()}
+function connClear(){cSelected=[];renderConnBoard()}
+initConn();
+
+// ─────────────────────────────
+// WORDLE — 6-letter, curated common words only
+// ─────────────────────────────
+// Answer pool — common, accessible 6-letter words (no obscure/niche)
+const W_WORDS=['SIMPLE','BRIDGE','FLOWER','CASTLE','GARDEN','FINGER','BUTTER','WINDOW','GOLDEN','SILVER','COFFEE','MARKET','PEOPLE','SUMMER','WINTER','GROUND','STREAM','BRIGHT','CLEVER','GENTLE','BOTTLE','FOREST','ISLAND','LAUNCH','MIRROR','RABBIT','TONGUE','TRAVEL','WONDER','ANIMAL','CANDLE','DANCER','ESCAPE','FAMILY','GRAVEL','HANDLE','INSECT','JUGGLE','KITTEN','MARBLE','NATURE','ORANGE','PILLOW','QUARTZ','RACING','SMOOTH','TENDER','UPLIFT','VELVET','WALNUT','YELLOW','ZIPPER','BANANA','CARPET','DOUBLE','EMPIRE','FACTOR','GOBLIN','HARBOR','IMPACT','JUNGLE','KERNEL','LADDER','MUFFIN','NAPKIN','OYSTER','PLANET','RESCUE','SALMON','TABLET','VIKING','WANDER','BANTER','DEBATE','ENDURE','FLAUNT','GLITCH','HUSTLE','IGNITE','JOYFUL','KETTLE','LOCKET','MUSCLE','NOODLE','PADDLE','QUIVER','RIDDLE','STATUE','TEAPOT','VIOLIN','WIDGET','ANCHOR','BEETLE','COTTON','DINNER','FRIDGE','GROUSE','INVITE','JIGSAW','KNIGHT','LANCER','MELLOW','PONDER','SPONGE','TUMBLE','VORTEX','WISHES','PURPLE','ARTHUR','TEMPLE','SIGNAL','FROZEN','JACKET','SUNSET','BUTTON','CLOUDY','ENERGY','GUITAR','HAMMER','LEMONS','PARROT','SPRING','TROPHY','UNFOLD','BRONZE','CRAYON','DESERT','DOLLAR','DONKEY','DRAGON','GROOVE','HUNTER','LAGOON','MOBILE','MONKEY','POCKET','POTATO','POWDER','PRINCE','PROFIT','PUZZLE','RADISH','RANDOM','RATTLE','REPAIR','RIBBON','RIPPLE','RITUAL','ROBUST','ROCKET','RUBBER','SADDLE','SAMPLE','SCHOOL','SCREEN','SEARCH','SECRET','SHADOW','SHIVER','SHOVEL','SHRIMP','SILVER','SINGER','SKETCH','SLEEPY','SMOOTH','SPIDER','SPLASH','STABLE','STATUE','STICKY','STORMY','STROLL','STURDY','SUBTLE','SUNSET','SUPPLY','SWITCH','SYMBOL','THRONE','THREAD','TRAVEL','UNIQUE','WEALTH','WEEKLY','WIDELY','WORTHY','WONDER','WRITTEN'];
+
+// Valid guess dictionary — answer pool plus other common 6-letter guesses
+const W_VALID=new Set([...W_WORDS,'CABINS','CAMERA','CANOPY','CASINO','CATTLE','CHANCE','CHANGE','CHARGE','CHEESE','CHERRY','CHOICE','CIRCUS','CLIMAX','CLIMBS','CLOSET','CLOSED','CLOTHS','COFFEE','COMING','COMMON','CONFER','COPIED','CORNER','COSTLY','COTTON','COUPLE','COURSE','CRACKS','CRADLE','CRAYON','CREAMS','CREATE','CRISIS','CRUISE','CUTOFF','DAMAGE','DANCED','DANGER','DARING','DEALER','DEARLY','DEBATE','DECENT','DECIDE','DEEPLY','DEFEND','DEFINE','DEFEAT','DELETE','DEMAND','DEPART','DEPEND','DEPICT','DEPLOY','DEPOSE','DEPUTY','DESERT','DESIGN','DESIRE','DETAIL','DEVICE','DEVOTE','DIESEL','DINING','DINNER','DIRECT','DIVIDE','DIVINE','DOLLAR','DOMAIN','DONKEY','DOUBLE','DOUBTS','DOZENS','DRAWER','DRINKS','DRIVER','DRYING','DUSTER','EAGER','EARNED','EASILY','EASING','EATING','EFFECT','EFFORT','EITHER','ELBOW','ELECT','ELEVEN','EMERGE','EMPTY','ENABLE','ENDING','ENGINE','ENOUGH','ENSURE','ENTERS','ENTIRE','ENTRY','EQUITY','ESCAPE','ESTATE','ETHICS','EUROPE','EVENLY','EVENTS','EVERY','EVOLVE','EXCEED','EXCESS','EXEMPT','EXOTIC','EXPAND','EXPECT','EXPERT','EXPIRE','EXPLAIN','EXPORT','EXTEND','EXTENT','FABRIC','FACING','FACTOR','FAILED','FAIRLY','FALLEN','FAMILY','FAMOUS','FATHER','FAULTY','FAVOR','FELLOW','FEMALE','FERRET','FEWER','FIGURE','FILING','FILMED','FILTER','FINGER','FINISH','FIRMLY','FISHER','FITNESS','FLAMES','FLIGHT','FLOORS','FLOWER','FLYING','FOLDED','FOLLOW','FORBID','FOREST','FORGET','FORMAL','FORMAT','FORMED','FORMER','FOSTER','FOUGHT','FOURTH','FRAMED','FRIEND','FRINGE','FROZEN','FRUITS','FUDGED','FUNDED','FUNDS','FURTHER','GAINED','GAMING','GARAGE','GARDEN','GATHER','GENDER','GENTLE','GENUINE','GERMAN','GIFTS','GIRLS','GIVEN','GLANCE','GLOBAL','GLOOMY','GOLDEN','GOSPEL','GOTTEN','GOVERN','GRADED','GRADES','GRAINS','GRAPHIC','GRAVEL','GREASE','GREATER','GREATS','GREEDY','GROOVE','GROUND','GROUPS','GROWTH','GUARDS','GUESTS','GUIDED','GUILTY','GUITAR','HAIRED','HAMMER','HANDED','HANDLE','HANDS','HAPPEN','HAPPILY','HARBOR','HARDER','HARDLY','HARSHLY','HATING','HAVING','HAZARD','HEADED','HEADS','HEALTH','HEARTS','HEATED','HEAVEN','HEAVILY','HEDGES','HEIGHT','HELPED','HENCE','HEROES','HIDDEN','HIGHER','HIGHEST','HIGHLY','HIKERS','HINTED','HISTORY','HITTERS','HOLDS','HOLMES','HONEST','HONOR','HOPING','HORROR','HOSTED','HOTELS','HOURLY','HOUSES','HUGELY','HUMANS','HUMBLE','HUMBLY','HUNGER','HUNTER','HUNTING','HURDLE','HUSTLE','ICONIC','IGNORE','ILLNESS','IMAGE','IMPACT','IMPORT','IMPOSE','INDEED','INDOOR','INDUCE','INFANT','INFLOW','INFORM','INJURE','INJURY','INLINE','INMATE','INNATE','INNERMOST','INNINGS','INPUT','INSECT','INSIDE','INSIST','INSTALL','INTACT','INTAKE','INTEND','INTENT','INTRO','INVEST','INVITE','INWARD','ISLAND','ISSUED','ISSUES','ITSELF','JACKET','JAGGED','JAGUAR','JAILED','JAILER','JAMMED','JOINT','JOINED','JOKING','JOSTLE','JOTTED','JOYFUL','JUDGED','JUDGES','JUGGLE','JUMBLE','JUMBO','JUMPER','JUNGLE','JUNIOR','JURIES','JUSTLY','KARATE','KEEPER','KERNEL','KICKED','KIDNAP','KILLER','KINDER','KINDLY','KINDS','KINGDOM','KISSED','KNIGHT','KNOWS','LABELS','LADDER','LADIES','LAGOON','LANDED','LARGER','LASERS','LASTED','LATELY','LATEST','LATTER','LAUGHED','LAUNCH','LAVISH','LAWYER','LAYERS','LEADER','LEAGUE','LEANED','LEARNED','LEARNT','LEAVES','LEFTOVER','LEGACY','LEGEND','LEMONS','LENGTH','LESSON','LESSER','LETHAL','LETTER','LIABLE','LIFTED','LIGHTS','LIKELY','LIMITS','LINKED','LIQUID','LISTED','LISTEN','LITERAL','LITTLE','LIVELY','LIVING','LOADED','LOADS','LOCALS','LOCATE','LOCKED','LOCKER','LOGGED','LONELY','LOOKED','LOOPED','LOOSER','LOSING','LOTION','LOVELY','LOVERS','LOVING','LOWEST','LUMBER','LUXURY','LYRICS','MADAME','MADDEN','MAGIC','MAJORS','MAKERS','MAKING','MALICE','MAMMAL','MANAGE','MANGER','MANNER','MANUAL','MARBLE','MARGIN','MARINE','MARKED','MARKER','MARKET','MARRY','MARTYR','MASTER','MATTERS','MAYHEM','MAYORS','MEADOW','MEDIA','MEDIAL','MEDICAL','MEDIUM','MEMBER','MEMORY','MENACE','MENTOR','MERELY','MERGED','MERGER','METHOD','METRO','MIDDLE','MIDST','MIGHTY','MILDLY','MIRROR','MISSED','MISSILE','MISTERY','MOBILE','MOCKED','MODERN','MODEST','MODULE','MOMENT','MONKEY','MONTHS','MOSTLY','MOTHER','MOTION','MOVERS','MOVIES','MOVING','MUFFIN','MURDER','MURMUR','MUSCLE','MUSEUM','MUSIC','MUTUAL','MYSELF','NARROW','NATION','NATIVE','NATURE','NEARBY','NEARLY','NEEDED','NEPHEW','NERVES','NESTED','NEWBIE','NEWEST','NICELY','NICKED','NIGHTS','NIMBLE','NORMAL','NOTICE','NOTING','NOTION','NUDGES','NUMBED','NUMBER','OBJECT','OBLIGE','OBTAIN','OCCUPY','OCCURS','OCEANS','OCTAVE','OFFEND','OFFERS','OFFICE','OFFSET','OLDEST','ONLINE','ONLOOKER','ONWARD','OPENED','OPENLY','OPTING','OPTION','ORANGE','ORDERS','ORGANIZE','OTHERS','OUNCES','OUSTED','OUTAGE','OUTING','OUTLAW','OUTLET','OUTPUT','OWING','OWNERS','OXFORD','OYSTER','PACKED','PACKER','PADDLE','PAINFUL','PAINTS','PAIRED','PAPERS','PARADE','PARDON','PARENT','PARROT','PARSER','PARTLY','PASSED','PASSER','PASTRY','PATCHED','PATENT','PATHS','PATIENT','PATTER','PAUSED','PAYING','PEACE','PEAKED','PEEKED','PENCIL','PENNY','PEOPLE','PERIOD','PERMIT','PERSON','PETALS','PETROL','PHASES','PHRASE','PICKED','PICKLE','PICKUP','PIECES','PILLOW','PILOTS','PINGED','PIRATE','PISTOL','PLACED','PLACES','PLAGUE','PLANET','PLANTS','PLATES','PLAYED','PLAYER','PLEASE','PLEDGE','PLENTY','POETRY','POINTS','POISON','POKING','POLICE','POLICY','POLISH','POLITE','POLLED','POODLE','POSING','POSTED','POSTER','POTATO','POURED','POVERTY','POWDER','POWERS','PRAISE','PRAYED','PREACH','PRESEN','PRESET','PRETTY','PREVENT','PRICED','PRIDE','PRIEST','PRIMER','PRINCE','PRINTS','PRISON','PRIVATE','PRIZED','PROBED','PROFIT','PROMPT','PROPER','PROVED','PUBLIC','PUDDLE','PULLED','PUMPED','PUNTER','PUPILS','PURELY','PURIFY','PURSED','PURSUE','PUSHED','PUZZLE','QUEENS','QUICKLY','QUOTED','RABBIT','RABBLE','RACES','RACING','RADAR','RAIDED','RAISED','RANDOM','RANGES','RAPIDLY','RAPID','RARELY','RATHER','RATING','RATIO','RAVELS','REACH','READER','READING','REALLY','REASON','REBELS','RECENT','RECIPE','RECORD','REDEEM','REDUCE','REELS','REFER','REFUSED','REGARD','REGIME','REGION','REJECT','RELAX','RELATE','RELAY','REMAIN','REMEDY','REMIND','REMINDS','REMOTE','RENDER','RENEWED','RENTED','REPAIR','REPEAT','REPORT','RESCUE','RESIST','RESORT','RESULT','RETAIL','RETAIN','RETIRE','RETORT','RETURN','REVEAL','REVERT','REVIEW','REVIVE','REWARD','RHYTHM','RIBBON','RICHER','RIDERS','RIDGED','RIDING','RIFLE','RIGHTS','RIPPLE','RISING','RISKED','RISKING','RIVAL','RIVERS','ROADS','ROBBED','ROBUST','ROCKED','ROCKER','ROCKET','RODENT','ROLLED','ROLLER','ROOFED','ROOFS','ROOTED','ROUNDS','ROUTES','ROVING','ROYAL','RUBBER','RUDELY','RUGBY','RULERS','RULING','RUMBLE','RUMORS','RUSHED','SADDLE','SAFELY','SAFER','SAILED','SAILOR','SAINT','SALAD','SALARY','SALMON','SALTED','SALUTE','SAMPLE','SANDED','SANITY','SAUCE','SAVING','SAYING','SCALES','SCARCE','SCARED','SCARLET','SCENES','SCENIC','SCHEMA','SCHEME','SCHOOL','SCIENCE','SCORED','SCORER','SCORES','SCRAMS','SCREAM','SCREEN','SCRIPT','SCROLL','SEALED','SEALER','SEARCH','SEASON','SECOND','SECRET','SECTOR','SECURE','SEEING','SEEKER','SELECT','SELLER','SENIOR','SENSED','SENSES','SERMON','SERVED','SERVER','SETTLE','SEVERE','SEWING','SEXIST','SHADOW','SHAKEN','SHAKES','SHAPED','SHAPES','SHARED','SHEARS','SHEEPS','SHEETS','SHELLS','SHIFT','SHINES','SHINY','SHOOTS','SHOULD','SHOUTS','SHOWED','SHOWER','SHRIMP','SHRINK','SHRUNK','SICKLY','SILENCE','SILENT','SILVER','SIMPLE','SIMPLY','SINGER','SINGLE','SINKS','SISTER','SIXTY','SIZED','SKATER','SKIING','SKILLS','SKIRTS','SLEEPS','SLEPT','SLICED','SLICES','SLIDES','SLIGHT','SLIMMER','SLIPPER','SLOPES','SLOWLY','SMALLER','SMARTLY','SMILED','SMILES','SMOOTH','SNACKS','SNAPS','SNEAKER','SNOWY','SOAPED','SOARED','SOCCER','SOCIAL','SOCKS','SOFTLY','SOLAR','SOLDIER','SOLELY','SOLID','SOLVED','SOLVER','SOMBER','SOMETHING','SOMEONE','SORROW','SORTED','SOUGHT','SOUNDS','SOUPS','SOURCE','SOURED','SOUTHERN','SPACE','SPARED','SPARES','SPARK','SPARSE','SPEECH','SPEND','SPENT','SPHERE','SPICED','SPICES','SPIDER','SPIRAL','SPIRIT','SPITES','SPLASH','SPLIT','SPOKEN','SPONGE','SPORTS','SPOTS','SPOUSE','SPRAY','SPREAD','SPRING','SPRINTS','SQUAD','SQUARE','STABLE','STACKS','STAFF','STAGES','STAGED','STAINS','STAKES','STAMPS','STANCE','STANDS','STAPLE','STARS','STARED','STARTER','STARVE','STATIC','STATUS','STATUE','STAYED','STEADY','STEAL','STEAM','STEEL','STEEPLY','STEPPED','STEREO','STICKY','STIFF','STILL','STING','STIRRED','STITCH','STOCK','STOLEN','STONES','STOOD','STORE','STORM','STORY','STOVES','STRAND','STRAP','STRAY','STREAM','STREET','STRESS','STRIDE','STRIKE','STRING','STRIPE','STRIPES','STRIVE','STROKE','STROLL','STRONG','STRUCK','STRUNG','STUCK','STUDIO','STUDY','STUFFY','STUMP','STUPID','STYLE','STYLED','SUBJECTS','SUBTLE','SUDDEN','SUFFER','SUFFIX','SUGAR','SUITED','SUITES','SULTAN','SUMMER','SUMMIT','SUNNY','SUNSET','SUPERB','SUPPLY','SUPPORT','SURELY','SURFACE','SURGE','SURGED','SURGES','SURPLUS','SURVEY','SUSHI','SWAYED','SWEAR','SWEAT','SWEET','SWIFT','SWINGS','SWIPE','SWITCH','SWORN','SYMBOL','SYRUPS','SYSTEM','TABLES','TABLET','TACKLE','TACTIC','TAILED','TAKING','TALENT','TALKED','TALKER','TANGLE','TARGETS','TASTED','TASTES','TATTOO','TAUGHT','TAXING','TEACHES','TEAMED','TEARS','TEASE','TEDDY','TELLS','TEMPLE','TEMPO','TENDER','TENNIS','TENSE','TENTS','TERMED','TERMS','TESTED','TESTER','THANKS','THEIRS','THEMES','THEMED','THEORY','THERE','THEREBY','THESE','THICK','THIEF','THIRD','THIRTY','THIRD','THORNS','THOSE','THOUGH','THREAD','THREATS','THREE','THRILL','THROAT','THROW','THROWN','THUMB','THUMP','TICKS','TIGER','TIGHT','TILED','TIMED','TIMES','TIMING','TINGE','TINGED','TINGLE','TINNED','TIPPED','TIPSY','TIRED','TIRES','TITLE','TITLES','TODAY','TOILS','TOKEN','TOMBS','TONIGHT','TOOLS','TOOTH','TOPIC','TOPPING','TORN','TORONTO','TORTURE','TOSSED','TOTAL','TOTEM','TOUCH','TOUGH','TOURED','TOWARDS','TOWERS','TOWNS','TOXIC','TRACED','TRACES','TRACKS','TRADED','TRADER','TRADES','TRAGIC','TRAILS','TRAIN','TRAINED','TRAINS','TRAITS','TRAMP','TRANS','TRAPS','TRASH','TRAVEL','TREAT','TREES','TREND','TRIAL','TRIBE','TRICKS','TRIES','TRIGGER','TRIM','TRIPLE','TROOPS','TROPHY','TROPIC','TROT','TROUBLE','TROUGH','TROUT','TRUCE','TRUCK','TRUMP','TRUNK','TRUST','TRUTH','TRYING','TUBES','TUCKED','TUMBLE','TUNED','TUNING','TURNED','TURNS','TURTLE','TUTOR','TWELVE','TWENTY','TWICE','TWIST','TYPED','TYPES','UDDER','ULCER','ULTIMATE','UMBREL','UNABLE','UNARM','UNAWARE','UNBOUND','UNCLE','UNCOOL','UNCORK','UNDER','UNDID','UNDO','UNDOING','UNDONE','UNEASY','UNEVEN','UNFAIR','UNFIT','UNFOLD','UNHAPPY','UNICORN','UNIFY','UNION','UNIQUE','UNITED','UNITS','UNITY','UNJUST','UNLEASH','UNLESS','UNLIKE','UNLINK','UNLOAD','UNLOCK','UNMASK','UNREAL','UNREST','UNROLL','UNSAFE','UNSEEN','UNSURE','UNTIE','UNTIED','UNTIL','UNUSED','UNUSUAL','UNVEIL','UNWARY','UNWIND','UPDATE','UPHELD','UPHILL','UPHOLD','UPKEEP','UPLIFT','UPON','UPPER','UPRISE','UPROAR','UPSET','UPSIDE','UPWARD','URBAN','URGENT','USAGES','USED','USEFUL','USER','USERS','USING','USHER','USHERS','USUAL','UTILITY','UTMOST','UTOPIA','VACATE','VACATION','VACCINATE','VACUUM','VALID','VALLEY','VALUE','VALUED','VALVE','VANISH','VAPOR','VAPID','VARIED','VARIES','VARIETY','VARIOUS','VAST','VAULT','VEINS','VELVET','VENDOR','VENT','VENTED','VENTS','VENUE','VERGE','VERSED','VERSES','VESSEL','VESTED','VICAR','VICES','VICTIM','VICTOR','VIDEO','VIEWED','VIEWS','VIGIL','VIGILS','VIKING','VINES','VIOLET','VIOLATE','VIOLET','VIRAL','VIRTUE','VISIT','VISITS','VITAL','VIVID','VOCAL','VOICED','VOICES','VOIDED','VOLT','VOLUME','VOMIT','VOTED','VOTER','VOTERS','VOTES','VOWEL','VOWED','VOYAGE','WAFER','WAGED','WAGES','WAGON','WAILED','WAITED','WAKED','WALKED','WALKER','WALKS','WALLED','WALLET','WALNUT','WANDER','WANTED','WARDED','WARDS','WARMED','WARNED','WARNS','WARPED','WARRIOR','WARS','WASHED','WASHER','WASTED','WASTES','WATCHED','WATERY','WAVED','WAVES','WAXED','WEAKEN','WEAKLY','WEALTH','WEAPON','WEARS','WEARY','WEAVE','WEDDED','WEEDS','WEEKS','WEEKLY','WEIGHED','WEIGHS','WEIGHT','WEIRD','WELCOMED','WELDED','WELDS','WELLS','WELTS','WENT','WHALE','WHALES','WHARF','WHEAT','WHEEL','WHENEVER','WHERE','WHERES','WHICH','WHILE','WHIPS','WHISK','WHITE','WHOLE','WHOSE','WICKED','WIDELY','WIDEN','WIDOW','WIDTH','WIELD','WIFE','WIFI','WILDER','WILDLY','WILLED','WILLS','WINDS','WINGED','WINKED','WINNER','WINS','WINTER','WIPED','WIPES','WIRED','WIRING','WISDOM','WISELY','WISHED','WISHES','WITHIN','WITHOUT','WITNESS','WIVES','WOKE','WOMAN','WOMEN','WONDER','WOODED','WOODS','WOOL','WOOLEN','WORDS','WORKED','WORKER','WORKS','WORLD','WORLDS','WORMED','WORMS','WORN','WORRY','WORSE','WORSHIP','WORST','WORTH','WORTHY','WOULD','WOUND','WOUNDED','WOVEN','WRAPS','WRECK','WRENCH','WRENS','WRINKLE','WRINKLES','WRIST','WRITES','WRITER','WRITTEN','WRONG','WROTE','YACHT','YAMS','YANKED','YANKEE','YARDS','YEARLY','YEARN','YEARNED','YEARS','YEAST','YELLED','YELLOW','YELPED','YELPS','YIELD','YOLKS','YOUNG','YOUTH','ZEBRA','ZEROS','ZIGZAG','ZIPPED','ZIPPER','ZONED','ZONES','ZOOMED','ZOOS','ZOMBIE','ZONING']);
+
+let wWord='',wGuesses=[],wCur='',wOver=false,wKb={};
+function initWordle(){
+  wWord=W_WORDS[daysSinceEpoch%W_WORDS.length];
+  wGuesses=[];wCur='';wOver=false;wKb={};
+  document.getElementById('w-msg').textContent='Guess the 6-letter word!';
+  // Day counter (render once on first call only)
+  const wordleDay=daysSinceEpoch%W_WORDS.length+1;
+  const wCounter=document.getElementById('wordle-day-counter');
+  if(wCounter&&!wCounter.dataset.set){wCounter.textContent=`Word #${wordleDay} · new word daily`;wCounter.dataset.set='1';}
+  renderWGrid(false);renderWKb();
+}
+function renderWGrid(doFlip){
+  const el=document.getElementById('w-grid');el.innerHTML='';
+  for(let r=0;r<6;r++){
+    const row=document.createElement('div');row.className='wordle-row';
+    for(let c=0;c<6;c++){
+      const cell=document.createElement('div');cell.className='wordle-cell';
+      if(r<wGuesses.length){
+        const g=wGuesses[r];cell.textContent=g.l[c];
+        // Only animate the most recent guess row
+        if(doFlip&&r===wGuesses.length-1){
+          setTimeout(()=>cell.classList.add(g.r[c],'flip'),c*70);
+        } else {
+          cell.classList.add(g.r[c]);
+        }
+      } else if(r===wGuesses.length&&c<wCur.length){
+        cell.textContent=wCur[c];cell.classList.add('has-letter');
+      }
+      row.appendChild(cell);
+    }
+    el.appendChild(row);
+  }
+}
+function renderWKb(){
+  const rows=[['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L'],['ENTER','Z','X','C','V','B','N','M','⌫']];
+  const el=document.getElementById('w-kb');el.innerHTML='';
+  rows.forEach(row=>{
+    const div=document.createElement('div');div.className='wordle-kb-row';
+    row.forEach(k=>{
+      const btn=document.createElement('button');btn.className='kb-key';
+      if(k.length>1)btn.style.minWidth='52px';
+      btn.textContent=k;if(wKb[k])btn.classList.add(wKb[k]);
+      btn.onclick=()=>wKey(k);div.appendChild(btn);
+    });
+    el.appendChild(div);
+  });
+}
+function wKey(k){
+  if(wOver)return;
+  if(k==='⌫'){wCur=wCur.slice(0,-1);renderWGrid(false);}
+  else if(k==='ENTER'){
+    if(wCur.length!==6){document.getElementById('w-msg').textContent='Need 6 letters!';return;}
+    // Word validation check
+    if(!W_VALID.has(wCur)&&!W_WORDS.includes(wCur)){
+      document.getElementById('w-msg').textContent='Not a valid word!';
+      // Shake the current row
+      const rows=document.getElementById('w-grid').children;
+      const curRow=rows[wGuesses.length];
+      if(curRow){curRow.style.animation='shake .35s ease';setTimeout(()=>curRow.style.animation='',400);}
+      return;
+    }
+    const res=wCur.split('').map((l,i)=>l===wWord[i]?'correct':wWord.includes(l)?'present':'absent');
+    wCur.split('').forEach((l,i)=>{const p=wKb[l];if(!p||p==='absent'||(p==='present'&&res[i]==='correct'))wKb[l]=res[i];});
+    wGuesses.push({l:wCur.split(''),r:res});
+    if(wCur===wWord){wOver=true;setTimeout(()=>{document.getElementById('w-msg').textContent='🎉 Got it!'},400+6*70);}
+    else if(wGuesses.length===6){wOver=true;setTimeout(()=>{document.getElementById('w-msg').textContent=`The word was ${wWord}`;},400+6*70);}
+    wCur='';
+    renderWGrid(true); // flip only on enter
+    setTimeout(renderWKb,500);
+  } else if(wCur.length<6&&/^[A-Z]$/.test(k)){wCur+=k;renderWGrid(false);}
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('panel-wordle').classList.contains('active'))return;
+  if(e.key==='Backspace')wKey('⌫');
+  else if(e.key==='Enter')wKey('ENTER');
+  else if(/^[a-zA-Z]$/.test(e.key))wKey(e.key.toUpperCase());
+});
+initWordle();
+
+// ─────────────────────────────
+// NAV HAMBURGER
+// ─────────────────────────────
+function navToggle(){
+  const ham=document.getElementById('nav-ham');
+  const links=document.getElementById('nav-links');
+  ham.classList.toggle('open');
+  links.classList.toggle('open');
+}
+function navClose(){
+  document.getElementById('nav-ham').classList.remove('open');
+  document.getElementById('nav-links').classList.remove('open');
+}
+
+// ─────────────────────────────
+// MUSIC — Rock Classics YT IDs
+// ─────────────────────────────
+// Rock classics YT playlist IDs
+const ROCK_YT=[
+  {n:'R U Mine?',a:'Arctic Monkeys',id:'hQ33wSAFBFc'},
+  {n:'Do I Wanna Know?',a:'Arctic Monkeys',id:'bpOSxM0MsIo'},
+  {n:'Bohemian Rhapsody',a:'Queen',id:'fJ9rUzIMcZQ'},
+  {n:"Don't Stop Me Now",a:'Queen',id:'HgzGwKwLmgM'},
+  {n:'Wonderwall',a:'Oasis',id:'bx1Bh8ZvH84'},
+  {n:'Champagne Supernova',a:'Oasis',id:'lyRKMH5lSWA'},
+  {n:'Boulevard of Broken Dreams',a:'Green Day',id:'Soa3gO7tL-c'},
+  {n:'Good Riddance',a:'Green Day',id:'CnQ8N1KacBc'},
+  {n:'Come As You Are',a:'Nirvana',id:'vabnZ9-ex7o'},
+  {n:'Smells Like Teen Spirit',a:'Nirvana',id:'hTWKbfoikeg'},
+  {n:'Hey Jude',a:'The Beatles',id:'A_MjCqQoLLA'},
+  {n:'Let It Be',a:'The Beatles',id:'QDYfEBY9NM4'},
+];
+
+// ─────────────────────────────
+// WAX SEAL → LETTER
+// ─────────────────────────────
+function sealClick(){
+  const seal=document.getElementById('seal');
+  seal.classList.add('cracking');
+  setTimeout(()=>openLetter(),500);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SLINGSHOT BASKETBALL — side-view, Angry Birds style
+// ─────────────────────────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('bb-canvas');
+  if(!canvas)return;
+  const msgEl=document.getElementById('bb-msg');
+  const scoreEl=document.getElementById('bb-score');
+  const streakEl=document.getElementById('bb-streak');
+
+  function getSize(){
+    const maxW=Math.min(window.innerWidth-48,640);
+    return{w:maxW,h:Math.round(maxW*0.58)};
+  }
+  let S=getSize();
+  canvas.width=S.w;canvas.height=S.h;
+  const ctx=canvas.getContext('2d');
+
+  const GRAVITY=0.36;
+  let score=0,streak=0;
+  let ball={x:0,y:0,vx:0,vy:0,r:0,flying:false,spin:0};
+  // drag.cx/cy = current pulled position (starts at rest = slX,slY)
+  let drag={active:false,cx:0,cy:0};
+  let rimHit=false,scored=false,missed=false,rimGlowing=false;
+  let animId=null;
+
+  function L(){
+    const slX=Math.round(S.w*0.15);
+    const slY=Math.round(S.h*0.70);
+    const ballR=Math.round(S.w*0.046);
+    return{
+      slX, slY, ballR,
+      maxPull:Math.round(S.w*0.13),
+      // anchor points where elastic attaches (just two fixed dots above slingshot base)
+      anchorLX:slX-Math.round(S.w*0.022), anchorLY:slY-Math.round(S.h*0.06),
+      anchorRX:slX+Math.round(S.w*0.022), anchorRY:slY-Math.round(S.h*0.06),
+      hoopX:Math.round(S.w*0.79),
+      hoopY:Math.round(S.h*0.33),
+      rimW:Math.round(S.w*0.09),
+      rimH:6,
+      backboardX:Math.round(S.w*0.875),
+      backboardY:Math.round(S.h*0.20),
+      backboardH:Math.round(S.h*0.24),
+      backboardW:9,
+      netH:Math.round(S.h*0.10),
+      floorY:Math.round(S.h*0.87),
+    };
+  }
+
+  function resetBall(full){
+    const l=L();
+    ball={x:l.slX,y:l.slY,vx:0,vy:0,r:l.ballR,flying:false,spin:0,canScore:false};
+    drag={active:false,cx:l.slX,cy:l.slY};
+    rimHit=false;scored=false;missed=false;rimGlowing=false;
+    if(full){score=0;streak=0;scoreEl.textContent=0;streakEl.textContent=0;}
+    msgEl.textContent='';
+  }
+  window.bbReset=()=>{resetBall(true);cancelAnimationFrame(animId);loop();};
+
+  // ── AIM ASSIST: blend raw trajectory 35% toward ideal hoop arc ──
+  function aimAssistedVelocity(rawVx, rawVy, l){
+    // Ideal launch: hit center of hoop
+    const targetX = l.hoopX + l.rimW*0.5;
+    const targetY = l.hoopY;
+    const startX  = l.slX, startY = l.slY;
+    // Solve for vx,vy that reach target with gravity
+    // Use time derived from raw shot power so feel stays consistent
+    const rawSpeed = Math.sqrt(rawVx*rawVx+rawVy*rawVy);
+    if(rawSpeed<0.5) return {vx:rawVx,vy:rawVy};
+    const dx=targetX-startX, dy=targetY-startY;
+    // Pick t so arc matches raw horizontal speed roughly
+    const t = Math.abs(dx/rawVx)||20;
+    const idealVx = dx/t;
+    const idealVy = (dy - 0.5*GRAVITY*t*t)/t;
+    // Blend 35% toward ideal
+    const blend=0.35;
+    return{
+      vx: rawVx*(1-blend)+idealVx*blend,
+      vy: rawVy*(1-blend)+idealVy*blend,
+    };
+  }
+
+  function draw(){
+    const l=L();
+    ctx.clearRect(0,0,S.w,S.h);
+
+    // Background
+    const bg=ctx.createLinearGradient(0,0,0,S.h);
+    bg.addColorStop(0,'#090418');bg.addColorStop(1,'#0f0728');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,S.w,S.h);
+
+    // Floor
+    ctx.fillStyle='rgba(176,110,243,.05)';
+    ctx.fillRect(0,l.floorY,S.w,S.h-l.floorY);
+    ctx.strokeStyle='rgba(176,110,243,.18)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,l.floorY);ctx.lineTo(S.w,l.floorY);ctx.stroke();
+
+    // Three-point arc decoration
+    ctx.strokeStyle='rgba(176,110,243,.04)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(l.hoopX,l.floorY,S.w*0.38,Math.PI,0);ctx.stroke();
+
+    // Backboard
+    ctx.fillStyle='rgba(240,240,255,.18)';
+    ctx.fillRect(l.backboardX,l.backboardY,l.backboardW,l.backboardH);
+    ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=1.5;
+    ctx.strokeRect(l.backboardX+1.5,l.hoopY-l.rimH*3,l.backboardW-3,l.rimH*6);
+
+    // Pole
+    ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=4;ctx.lineCap='butt';
+    ctx.beginPath();
+    ctx.moveTo(l.backboardX+l.backboardW/2,l.backboardY+l.backboardH);
+    ctx.lineTo(l.backboardX+l.backboardW/2,l.floorY);
+    ctx.stroke();
+
+    // Rim
+    const rimL=l.hoopX, rimR=l.hoopX+l.rimW;
+    const rimGlow=rimGlowing?'rgba(255,140,0,.95)':'rgba(255,80,0,.8)';
+    const rimBlur=rimGlowing?20:12;
+    ctx.shadowBlur=rimBlur;ctx.shadowColor=rimGlow;
+    ctx.fillStyle=rimGlowing?'#ff8c00':'#ff4500';
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(rimL,l.hoopY,l.rimW,l.rimH,3);else ctx.rect(rimL,l.hoopY,l.rimW,l.rimH);
+    ctx.fill();ctx.shadowBlur=0;
+
+    // Net
+    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;
+    const netT=l.hoopY+l.rimH, netB=netT+l.netH, ins=l.rimW*0.18;
+    for(let i=0;i<=5;i++){
+      const t=i/5;
+      ctx.beginPath();ctx.moveTo(rimL+t*l.rimW,netT);ctx.lineTo(rimL+ins+t*(l.rimW-2*ins),netB);ctx.stroke();
+    }
+    for(let j=1;j<=3;j++){
+      const t=j/4, y=netT+t*l.netH;
+      ctx.beginPath();ctx.moveTo(rimL+ins*t,y);ctx.lineTo(rimR-ins*t,y);ctx.stroke();
+    }
+
+    // ── Slingshot base pole only (NO fork drawn over ball) ──
+    ctx.strokeStyle='rgba(176,110,243,.45)';ctx.lineWidth=5;ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(l.slX,l.slY+ball.r*0.5);
+    ctx.lineTo(l.slX,l.floorY);
+    ctx.stroke();
+
+    // Elastic bands — drawn BEHIND the ball, from anchor points to ball center
+    if(!ball.flying){
+      const bx=drag.cx, by=drag.cy;
+      // Draw elastic from each anchor to ball, but STOP at ball edge so it looks attached
+      const drawElastic=(ax,ay)=>{
+        const edx=bx-ax, edy=by-ay;
+        const edist=Math.sqrt(edx*edx+edy*edy)||1;
+        // End point = ball surface (stop ball.r pixels before center)
+        const ex=bx-(edx/edist)*ball.r;
+        const ey=by-(edy/edist)*ball.r;
+        const stretch=Math.sqrt((bx-l.slX)**2+(by-l.slY)**2)/l.maxPull;
+        const col=`rgba(176,110,243,${0.3+stretch*0.4})`;
+        ctx.strokeStyle=col;ctx.lineWidth=2+stretch*1.5;ctx.lineCap='round';
+        ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ex,ey);ctx.stroke();
+      };
+      drawElastic(l.anchorLX,l.anchorLY);
+      drawElastic(l.anchorRX,l.anchorRY);
+
+      // Aim-assisted trajectory preview
+      const rawDx=l.slX-bx, rawDy=l.slY-by;
+      const rawDist=Math.sqrt(rawDx*rawDx+rawDy*rawDy);
+      const power=rawDist/l.maxPull;
+      if(power>0.06){
+        const rawVx=rawDx*0.28*power*1.6;
+        const rawVy=rawDy*0.28*power*1.6;
+        const {vx:pvx,vy:pvy}=aimAssistedVelocity(rawVx,rawVy,l);
+        // Draw 22 preview dots along assisted arc
+        for(let t=1;t<=22;t++){
+          const px=bx+pvx*t;
+          const py=by+pvy*t+0.5*GRAVITY*t*t;
+          if(py>l.floorY)break;
+          const frac=t/22;
+          // Dots get smaller and more transparent toward end
+          const r=Math.max(1.5,3.5*(1-frac*0.6));
+          ctx.globalAlpha=(1-frac)*0.55*power;
+          ctx.fillStyle='#b06ef3';
+          ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();
+        }
+        ctx.globalAlpha=1;
+      }
+    }
+
+    // ── Ball ──
+    ctx.save();
+    ctx.translate(ball.x,ball.y);
+    ctx.rotate(ball.spin);
+    const bg2=ctx.createRadialGradient(-ball.r*0.28,-ball.r*0.32,ball.r*0.08,0,0,ball.r);
+    bg2.addColorStop(0,'#fba05a');
+    bg2.addColorStop(0.55,'#ea580c');
+    bg2.addColorStop(1,'#7c2d12');
+    ctx.beginPath();ctx.arc(0,0,ball.r,0,Math.PI*2);
+    ctx.fillStyle=bg2;ctx.fill();
+    // Seams
+    ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(-ball.r,0);ctx.lineTo(ball.r,0);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,-ball.r);ctx.lineTo(0,ball.r);ctx.stroke();
+    ctx.beginPath();ctx.arc(0,0,ball.r*0.52,0,Math.PI*2);ctx.stroke();
+    ctx.restore();
+
+    // Anchor dots (small circles showing where elastic attaches)
+    if(!ball.flying){
+      ctx.fillStyle='rgba(176,110,243,.6)';
+      ctx.beginPath();ctx.arc(l.anchorLX,l.anchorLY,3,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(l.anchorRX,l.anchorRY,3,0,Math.PI*2);ctx.fill();
+    }
+  }
+
+  function loop(){
+    const l=L();
+    if(!ball.flying){draw();animId=requestAnimationFrame(loop);return;}
+
+    ball.vy+=GRAVITY;
+    ball.x+=ball.vx;
+    ball.y+=ball.vy;
+    ball.spin+=ball.vx*0.045;
+
+    const rimL=l.hoopX, rimR=l.hoopX+l.rimW, rimY=l.hoopY;
+
+    if(!scored&&!missed){
+      // Score: ball passes through rim opening going DOWNWARD only
+      // x must be strictly inside rim (ball center between inner rim edges)
+      const innerL=rimL+ball.r*0.6;
+      const innerR=rimR-ball.r*0.6;
+      const inX=ball.x>innerL&&ball.x<innerR;
+      const goingDown=ball.vy>0.5; // Must be moving DOWN with meaningful velocity
+      const crossingRim=ball.y>=rimY&&ball.y<=rimY+ball.r*2;
+      // Only score once per shot via canScore flag
+      if(inX&&goingDown&&crossingRim&&ball.canScore){
+        ball.canScore=false; // Prevent double-scoring on same shot
+        scored=true;score++;streak++;
+        scoreEl.textContent=score;streakEl.textContent=streak;
+        // Screen shake
+        canvas.style.transition='transform 0.05s';
+        canvas.style.transform='translate(3px,-3px)';
+        setTimeout(()=>{canvas.style.transform='translate(-3px,2px)';},50);
+        setTimeout(()=>{canvas.style.transform='translate(2px,-2px)';},100);
+        setTimeout(()=>{canvas.style.transform='';},150);
+        const m=['Swish! 🔥','Nothing but net 👑','Pure silk 💜','Too easy.','She scores again!','Effortless.','And 1! 🎯','Ice in the veins 🧊','Buckets. 🪣'];
+        msgEl.style.color='#86efac';msgEl.textContent=m[Math.floor(Math.random()*m.length)];
+        ball.vx*=0.35;ball.vy*=0.4;
+        // Ball shrinks as it goes through net
+        const origR=ball.r;
+        const shrink=setInterval(()=>{if(ball.r>origR*0.6)ball.r-=0.8;},30);
+        setTimeout(()=>{clearInterval(shrink);resetBall(false);cancelAnimationFrame(animId);loop();},1300);
+      }
+
+      // Rim glow on near miss
+      const nearL=Math.abs(ball.x-rimL)<ball.r*2&&ball.y>rimY-ball.r*2&&ball.y<rimY+ball.r*2;
+      const nearR=Math.abs(ball.x-rimR)<ball.r*2&&ball.y>rimY-ball.r*2&&ball.y<rimY+ball.r*2;
+      if((nearL||nearR)&&!rimHit){
+        // Rim glow is handled in draw via rimGlowing flag
+        rimGlowing=true;setTimeout(()=>{rimGlowing=false;},300);
+      }
+
+      // Left rim bounce
+      if(!rimHit&&Math.abs(ball.x-rimL)<ball.r*0.85&&ball.y>rimY-ball.r&&ball.y<rimY+ball.r*1.5){
+        rimHit=true;
+        ball.vx=Math.abs(ball.vx)*0.5;
+        ball.vy*=-0.45;
+      }
+      // Right rim bounce
+      if(!rimHit&&Math.abs(ball.x-rimR)<ball.r*0.85&&ball.y>rimY-ball.r&&ball.y<rimY+ball.r*1.5){
+        rimHit=true;
+        ball.vx=-Math.abs(ball.vx)*0.5;
+        ball.vy*=-0.45;
+      }
+
+      // Backboard
+      if(ball.x+ball.r>l.backboardX&&ball.x-ball.r<l.backboardX+l.backboardW&&
+         ball.y>l.backboardY&&ball.y<l.backboardY+l.backboardH){
+        ball.vx*=-0.55;ball.x=l.backboardX-ball.r;
+      }
+    }
+
+    // Floor bounce/settle
+    if(ball.y+ball.r>l.floorY){
+      if(!scored&&!missed){
+        missed=true;streak=0;streakEl.textContent=0;
+        const m=['Brick 😬','Air ball!','Off the floor...','Raghav could\'ve done that','Try again 💀','Not even close 😭','Floor ≠ hoop 💀'];
+        msgEl.style.color='#fca5a5';msgEl.textContent=m[Math.floor(Math.random()*m.length)];
+      }
+      ball.y=l.floorY-ball.r;
+      ball.vy*=-0.42;ball.vx*=0.78;
+      if(Math.abs(ball.vy)<1.2){ball.vy=0;}
+      if(missed&&Math.abs(ball.vx)<0.4&&ball.vy===0){
+        setTimeout(()=>{resetBall(false);cancelAnimationFrame(animId);loop();},500);
+        draw();return;
+      }
+    }
+
+    // Off screen
+    if(ball.x>S.w+120||ball.x<-120){
+      if(!scored&&!missed){
+        missed=true;streak=0;streakEl.textContent=0;
+        msgEl.style.color='#fca5a5';msgEl.textContent='It left the building 😂';
+      }
+      setTimeout(()=>{resetBall(false);cancelAnimationFrame(animId);loop();},700);
+      draw();return;
+    }
+
+    draw();animId=requestAnimationFrame(loop);
+  }
+
+  // ── Input ──
+  function getPos(e){
+    const r=canvas.getBoundingClientRect();
+    const src=e.touches?e.touches[0]:e;
+    const scaleX=S.w/r.width, scaleY=S.h/r.height;
+    return{x:(src.clientX-r.left)*scaleX, y:(src.clientY-r.top)*scaleY};
+  }
+
+  canvas.addEventListener('mousedown',e=>{
+    if(ball.flying)return;
+    const p=getPos(e);
+    const l=L();
+    // Allow drag from anywhere within 3x ball radius of rest position
+    const dx=p.x-l.slX, dy=p.y-l.slY;
+    if(Math.sqrt(dx*dx+dy*dy)<l.ballR*3){
+      drag.active=true;
+      e.preventDefault();
+    }
+  });
+
+  // mousemove on DOCUMENT so dragging outside canvas still works
+  document.addEventListener('mousemove',e=>{
+    if(!drag.active)return;
+    e.preventDefault();
+    const p=getPos(e);
+    const l=L();
+    const dx=p.x-l.slX, dy=p.y-l.slY;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    const clamped=Math.min(dist,l.maxPull);
+    const angle=Math.atan2(dy,dx);
+    drag.cx=l.slX+Math.cos(angle)*clamped;
+    drag.cy=l.slY+Math.sin(angle)*clamped;
+    ball.x=drag.cx;ball.y=drag.cy;
+  },{passive:false});
+
+  document.addEventListener('mouseup',e=>{
+    if(!drag.active)return;
+    drag.active=false;
+    const l=L();
+    const dx=l.slX-drag.cx, dy=l.slY-drag.cy;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<10){drag.cx=l.slX;drag.cy=l.slY;ball.x=l.slX;ball.y=l.slY;return;}
+    const power=dist/l.maxPull;
+    const rawVx=dx*0.28*power*1.6;
+    const rawVy=dy*0.28*power*1.6;
+    const {vx,vy}=aimAssistedVelocity(rawVx,rawVy,l);
+    ball.vx=vx;ball.vy=vy;
+    ball.flying=true;ball.canScore=true;
+    cancelAnimationFrame(animId);loop();
+  });
+
+  // Touch
+  canvas.addEventListener('touchstart',e=>{
+    if(ball.flying)return;
+    const p=getPos(e);
+    const l=L();
+    const dx=p.x-l.slX, dy=p.y-l.slY;
+    if(Math.sqrt(dx*dx+dy*dy)<l.ballR*3){drag.active=true;e.preventDefault();}
+  },{passive:false});
+
+  canvas.addEventListener('touchmove',e=>{
+    if(!drag.active)return;
+    e.preventDefault();
+    const p=getPos(e);
+    const l=L();
+    const dx=p.x-l.slX, dy=p.y-l.slY;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    const clamped=Math.min(dist,l.maxPull);
+    const angle=Math.atan2(dy,dx);
+    drag.cx=l.slX+Math.cos(angle)*clamped;
+    drag.cy=l.slY+Math.sin(angle)*clamped;
+    ball.x=drag.cx;ball.y=drag.cy;
+  },{passive:false});
+
+  document.addEventListener('touchend',e=>{
+    if(!drag.active)return;
+    drag.active=false;
+    const l=L();
+    const dx=l.slX-drag.cx, dy=l.slY-drag.cy;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<10){drag.cx=l.slX;drag.cy=l.slY;ball.x=l.slX;ball.y=l.slY;return;}
+    const power=dist/l.maxPull;
+    const rawVx=dx*0.28*power*1.6;
+    const rawVy=dy*0.28*power*1.6;
+    const {vx,vy}=aimAssistedVelocity(rawVx,rawVy,l);
+    ball.vx=vx;ball.vy=vy;
+    ball.flying=true;ball.canScore=true;
+    cancelAnimationFrame(animId);loop();
+  });
+
+  window.addEventListener('resize',()=>{
+    S=getSize();canvas.width=S.w;canvas.height=S.h;
+    resetBall(false);cancelAnimationFrame(animId);loop();
+  });
+
+  resetBall(false);loop();
+})();
+
+// ─────────────────────────────
+// TRIVIA — 45 questions, 10 per day, deterministic rotation
+// ─────────────────────────────
+const TRIVIA_BANK=[
+  {q:"What is the capital of Australia?",o:["Sydney","Melbourne","Canberra","Brisbane"],a:2},
+  {q:"How many bones are in the adult human body?",o:["196","206","216","226"],a:1},
+  {q:"What year did the Titanic sink?",o:["1910","1912","1915","1920"],a:1},
+  {q:"Which planet is closest to the Sun?",o:["Venus","Earth","Mars","Mercury"],a:3},
+  {q:"What is the chemical symbol for gold?",o:["Go","Gd","Au","Ag"],a:2},
+  {q:"Who painted the Mona Lisa?",o:["Michelangelo","Raphael","Da Vinci","Caravaggio"],a:2},
+  {q:"How many sides does a hexagon have?",o:["5","6","7","8"],a:1},
+  {q:"What is the largest ocean on Earth?",o:["Atlantic","Indian","Arctic","Pacific"],a:3},
+  {q:"In which country is the Eiffel Tower located?",o:["Italy","Spain","France","Germany"],a:2},
+  {q:"What is the fastest land animal?",o:["Lion","Cheetah","Leopard","Horse"],a:1},
+  {q:"How many strings does a standard guitar have?",o:["4","5","6","7"],a:2},
+  {q:"What gas do plants absorb from the atmosphere?",o:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"],a:2},
+  {q:"What is the smallest country in the world?",o:["Monaco","Nauru","Vatican City","San Marino"],a:2},
+  {q:"Who wrote Romeo and Juliet?",o:["Charles Dickens","Oscar Wilde","Shakespeare","John Keats"],a:2},
+  {q:"What is the hardest natural substance on Earth?",o:["Gold","Iron","Diamond","Quartz"],a:2},
+  {q:"How many continents are there?",o:["5","6","7","8"],a:2},
+  {q:"Which element has the atomic number 1?",o:["Helium","Oxygen","Hydrogen","Carbon"],a:2},
+  {q:"What is the currency of Japan?",o:["Won","Yuan","Yen","Dong"],a:2},
+  {q:"Who is the lead singer of Arctic Monkeys?",o:["Liam Gallagher","Alex Turner","Dave Grohl","Thom Yorke"],a:1},
+  {q:"In what year was the first iPhone released?",o:["2005","2006","2007","2008"],a:2},
+  {q:"Which band released 'Bohemian Rhapsody'?",o:["The Beatles","Led Zeppelin","Queen","Aerosmith"],a:2},
+  {q:"What is the longest river in the world?",o:["Amazon","Mississippi","Nile","Yangtze"],a:2},
+  {q:"How many players are on a standard football (soccer) team?",o:["9","10","11","12"],a:2},
+  {q:"What is the name of the galaxy we live in?",o:["Andromeda","Whirlpool","Milky Way","Triangulum"],a:2},
+  {q:"Which country invented pizza?",o:["Greece","Italy","Spain","France"],a:1},
+  {q:"What is 7 × 8?",o:["54","56","58","64"],a:1},
+  {q:"Which metal is liquid at room temperature?",o:["Sodium","Zinc","Mercury","Lead"],a:2},
+  {q:"What is the tallest mountain in the world?",o:["K2","Kilimanjaro","Mont Blanc","Everest"],a:3},
+  {q:"Who sang 'Someone Like You'?",o:["Beyoncé","Rihanna","Adele","Lorde"],a:2},
+  {q:"How many teeth does an adult human typically have?",o:["28","30","32","34"],a:2},
+  {q:"Which country has the most natural lakes?",o:["USA","Russia","Brazil","Canada"],a:3},
+  {q:"What is the capital of Japan?",o:["Osaka","Kyoto","Tokyo","Hiroshima"],a:2},
+  {q:"Who invented the telephone?",o:["Edison","Tesla","Bell","Marconi"],a:2},
+  {q:"What is the square root of 144?",o:["11","12","13","14"],a:1},
+  {q:"Which planet has the most moons?",o:["Jupiter","Saturn","Uranus","Neptune"],a:1},
+  {q:"What year did World War 2 end?",o:["1943","1944","1945","1946"],a:2},
+  {q:"Which Arctic Monkeys song begins with 'I'm a puppet on a string'?",o:["Wonderwall","Do I Wanna Know?","R U Mine?","Cigarettes & Alcohol"],a:2},
+  {q:"What colour is an emerald?",o:["Red","Blue","Green","Yellow"],a:2},
+  {q:"How many days are in a leap year?",o:["364","365","366","367"],a:2},
+  {q:"What is the national animal of Scotland?",o:["Lion","Eagle","Stag","Unicorn"],a:3},
+  {q:"What is the most spoken language in the world?",o:["Spanish","English","Mandarin","Hindi"],a:2},
+  {q:"Who wrote 'Harry Potter'?",o:["J.R.R. Tolkien","J.K. Rowling","C.S. Lewis","Roald Dahl"],a:1},
+  {q:"What is the speed of light (approx)?",o:["200,000 km/s","300,000 km/s","400,000 km/s","500,000 km/s"],a:1},
+  {q:"Which Arctic Monkeys album features '505'?",o:["Whatever People Say I Am","Favourite Worst Nightmare","Humbug","AM"],a:1},
+  {q:"How old does Kaity turn this birthday?",o:["19","20","21","22"],a:2},
+  {q:"RCB's home ground is the?",o:["Chinnaswamy","Wankhede","Eden Gardens","Kotla"],a:0},
+];
+
+// 10 per day, cycle through all 45 before repeating, deterministic
+let tPool=[],tIdx=0,tScore=0,tAnswered=false;
+function initTrivia(){
+  const april30=new Date('2025-04-30T00:00:00').getTime();
+  const dayIndex=Math.max(0,Math.floor((Date.now()-april30)/86400000));
+  const totalSets=Math.ceil(TRIVIA_BANK.length/10);
+  const setIndex=dayIndex%totalSets;
+  const startIdx=setIndex*10;
+  let slice=TRIVIA_BANK.slice(startIdx,startIdx+10);
+  // If last set has fewer than 10, wrap to start
+  if(slice.length<10){slice=slice.concat(TRIVIA_BANK.slice(0,10-slice.length));}
+  tPool=slice;
+  tIdx=0;tScore=0;
+  // Day counter
+  const triviaSet=daysSinceEpoch%totalSets+1;
+  const tCounter=document.getElementById('trivia-day-counter');
+  if(tCounter)tCounter.textContent=`Set ${triviaSet} of ${totalSets} · new questions daily`;
+  renderTrivia();
+}
+function renderTrivia(){
+  document.getElementById('t-prog').style.width=(tIdx/tPool.length*100)+'%';
+  const el=document.getElementById('trivia-body');
+  if(tIdx>=tPool.length){
+    el.innerHTML=`<div class="trivia-end"><div class="trivia-end-score">${tScore}/${tPool.length}</div><p style="font-size:15px;color:#fff;margin:10px 0 24px">${tScore>=9?'Absolute legend. Genuinely impressive.':tScore>=6?'Solid. You know your stuff.':tScore>=4?'Not bad — some gaps though.':'Raghav says he could\'ve done better. He\'s lying.'}</p><button class="btn" onclick="initTrivia()">Play Again</button><div style="font-size:11px;color:#ffd700;margin-top:18px;letter-spacing:.15em">NEW QUESTIONS DAILY · CYCLES THROUGH 45</div></div>`;
+    return;
+  }
+  const q=tPool[tIdx];tAnswered=false;
+  el.innerHTML=`<div class="trivia-qnum">Question ${tIdx+1} / ${tPool.length}</div><div class="trivia-q">${q.q}</div><div class="trivia-opts">${q.o.map((o,i)=>`<button class="trivia-opt" onclick="tAnswer(${i})">${o}</button>`).join('')}</div><div class="trivia-fb" id="t-fb"></div>`;
+}
+function tAnswer(i){
+  if(tAnswered)return;tAnswered=true;
+  const q=tPool[tIdx];
+  document.querySelectorAll('.trivia-opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.trivia-opt')[i].classList.add(i===q.a?'correct':'wrong');
+  document.querySelectorAll('.trivia-opt')[q.a].classList.add('correct');
+  if(i===q.a)tScore++;
+  document.getElementById('t-fb').textContent=i===q.a?'✓ Correct!':'✗ Not quite.';
+  setTimeout(()=>{tIdx++;renderTrivia();},1100);
+}
+initTrivia();
+
+// ─────────────────────────────
+// LYRIC GUESS — multi-artist rock
+// ─────────────────────────────
+const LYRICS=[
+  {artist:"Arctic Monkeys",song:"R U Mine?",line:"I'm a puppet on a ____ to the tune of your heartbeat",word:"STRING"},
+  {artist:"Arctic Monkeys",song:"Do I Wanna Know?",line:"Have you got colour in your cheeks? Do you ever get that ____ where you can't explain",word:"FEAR"},
+  {artist:"Arctic Monkeys",song:"505",line:"I'm going back to ____, oh whoa",word:"505"},
+  {artist:"Arctic Monkeys",song:"I Wanna Be Yours",line:"I wanna be your vacuum cleaner breathing in your ____",word:"DUST"},
+  {artist:"Arctic Monkeys",song:"Why'd You Only Call Me",line:"Why'd you only call me when you're ____?",word:"HIGH"},
+  {artist:"Arctic Monkeys",song:"Fluorescent Adolescent",line:"You used to get it in your ____",word:"UNIFORM"},
+  {artist:"Arctic Monkeys",song:"Arabella",line:"Arabella's got some interstellar-____ to her mind",word:"GATOR"},
+  {artist:"Arctic Monkeys",song:"Snap Out Of It",line:"If you're gonna let it kill you, at least put up a ____",word:"FIGHT"},
+  {artist:"Arctic Monkeys",song:"Crying Lightning",line:"And your ____ fingers clawing at the ground",word:"CROOKED"},
+  {artist:"Arctic Monkeys",song:"Cornerstone",line:"I went to a marvellous party, the ____ was as high as a kite",word:"HOST"},
+  {artist:"Arctic Monkeys",song:"Teddy Picker",line:"Oh would you please stop picking at your ____?",word:"FACE"},
+  {artist:"Arctic Monkeys",song:"From the Ritz to the Rubble",line:"And I said no, 'cause they were ____ in the head",word:"WRONG"},
+  {artist:"Oasis",song:"Wonderwall",line:"Because maybe, you're gonna be the one that ____ me",word:"SAVES"},
+  {artist:"Oasis",song:"Live Forever",line:"Maybe I don't really wanna know how your ____ goes",word:"GARDEN"},
+  {artist:"Oasis",song:"Champagne Supernova",line:"Slowly walking down the hall, faster than a ____ ball",word:"CANNON"},
+  {artist:"Queen",song:"Bohemian Rhapsody",line:"Is this the real life? Is this just ____?",word:"FANTASY"},
+  {artist:"Queen",song:"Don't Stop Me Now",line:"I'm a shooting star leaping through the ____",word:"SKY"},
+  {artist:"Green Day",song:"Good Riddance",line:"It's something unpredictable, but in the end it's ____",word:"RIGHT"},
+  {artist:"Green Day",song:"Boulevard of Broken Dreams",line:"I walk a lonely ____, the only one that I have ever known",word:"ROAD"},
+  {artist:"Nirvana",song:"Come As You Are",line:"Come as you are, as you ____, as I want you to be",word:"WERE"},
+  {artist:"Nirvana",song:"Smells Like Teen Spirit",line:"Here we are now, ____ us",word:"ENTERTAIN"},
+  {artist:"The Beatles",song:"Let It Be",line:"When I find myself in times of trouble, Mother ____ comes to me",word:"MARY"},
+  {artist:"The Beatles",song:"Hey Jude",line:"Hey Jude, don't make it ____",word:"BAD"},
+];
+const lyricDayIdx=daysSinceEpoch%Math.floor(LYRICS.length/8);
+const lyricStart=lyricDayIdx*8;
+const LPOOL=[];
+for(let i=0;i<8;i++){LPOOL.push(LYRICS[(lyricStart+i)%LYRICS.length]);}
+let lIdx=0,lScore=0,lDone=false;
+function initLyrics(){lIdx=0;lScore=0;lDone=false;
+  // Day counter
+  const lyricDay=daysSinceEpoch%LYRICS.length+1;
+  const lCounter=document.getElementById('lyric-day-counter');
+  if(lCounter)lCounter.textContent=`Round #${lyricDay} · new lyrics daily`;
+  renderLyric();
+}
+function renderLyric(){
+  renderLDots();
+  if(lIdx>=LPOOL.length){lDone=true;renderLEnd();return}
+  const q=LPOOL[lIdx];
+  document.getElementById('l-artist').textContent=q.artist;
+  document.getElementById('l-song').textContent=q.song;
+  const p=q.line.split('____');
+  document.getElementById('l-line').innerHTML=p[0]+'<span class="lyric-blank">____</span>'+(p[1]||'');
+  document.getElementById('l-msg').textContent='';document.getElementById('l-msg').style.color='';
+  document.getElementById('l-input').value='';document.getElementById('l-end').innerHTML='';
+  document.getElementById('l-input').focus();
+}
+function renderLDots(){
+  document.getElementById('l-dots').innerHTML=LPOOL.map((_,i)=>`<div class="lyric-dot${i<lIdx?(i<lScore?' ok':' no'):''}"></div>`).join('');
+}
+function lyricGuess(){
+  if(lDone)return;
+  const guess=document.getElementById('l-input').value.trim().toUpperCase();
+  const correct=guess===LPOOL[lIdx].word;
+  if(correct)lScore++;
+  const msg=document.getElementById('l-msg');
+  msg.textContent=correct?`✓ Yes! "${LPOOL[lIdx].word}"`:`✗ It was "${LPOOL[lIdx].word}"`;
+  msg.style.color=correct?'#86efac':'#fca5a5';
+  lIdx++;renderLDots();
+  if(lIdx>=LPOOL.length){setTimeout(renderLEnd,800)}
+  else setTimeout(renderLyric,900);
+}
+function renderLEnd(){
+  document.getElementById('l-end').innerHTML=`<div class="lyric-end"><div class="lyric-end-score">${lScore}/${LPOOL.length}</div><p style="font-size:14px;color:var(--lgray);margin:10px 0 20px">${lScore>=7?'Real fan energy 🎸':lScore>=4?'Decent — keep listening':lScore>=2?'Some gaps... Raghav knows more lyrics than you and he doesn\'t listen to music.':'Bruh. Even Raghav got one right.'}</p><button class="btn" onclick="initLyrics()">Try Again</button></div>`;
+  document.getElementById('l-input').style.display='none';
+}
+initLyrics();
+
+// ─────────────────────────────
+// MUSIC PLAYER
+// ─────────────────────────────
+const TRACKS=[
+  {n:"R U Mine?",a:"Arctic Monkeys",dur:"3:22"},{n:"Do I Wanna Know?",a:"Arctic Monkeys",dur:"4:32"},
+  {n:"Bohemian Rhapsody",a:"Queen",dur:"5:55"},{n:"Don't Stop Me Now",a:"Queen",dur:"3:29"},
+  {n:"Wonderwall",a:"Oasis",dur:"4:18"},{n:"Champagne Supernova",a:"Oasis",dur:"7:27"},
+  {n:"Boulevard of Broken Dreams",a:"Green Day",dur:"4:20"},{n:"Good Riddance",a:"Green Day",dur:"2:41"},
+  {n:"Come As You Are",a:"Nirvana",dur:"3:39"},{n:"Smells Like Teen Spirit",a:"Nirvana",dur:"5:01"},
+  {n:"Hey Jude",a:"The Beatles",dur:"7:11"},{n:"Let It Be",a:"The Beatles",dur:"3:52"},
+];
+let mCur=0,mPlaying=false,mProg=0,mTimer=null;
+function renderTracks(){
+  const el=document.getElementById('track-list');el.innerHTML='';
+  TRACKS.forEach((t,i)=>{
+    const d=document.createElement('div');d.className='track-item'+(i===mCur?' active':'');
+    d.innerHTML=`<div class="track-n">${i===mCur&&mPlaying?'▶':i+1}</div><div class="track-info"><div class="track-name">${t.n}</div><div class="track-album">${t.a}</div></div><div style="font-size:11px;color:var(--gray)">${t.dur}</div>`;
+    d.onclick=()=>{mCur=i;mProg=0;if(!mPlaying)musicToggle();else{renderTracks();updateMusicUI();}};
+    el.appendChild(d);
+  });
+}
+function updateMusicUI(){
+  const t=TRACKS[mCur];
+  document.getElementById('m-title').textContent=t.n;
+  document.getElementById('m-dur').textContent=t.dur;
+  document.getElementById('m-artist').textContent=t.a;
+  document.getElementById('m-play').textContent=mPlaying?'⏸':'▶';
+  document.getElementById('vinyl').classList.toggle('spinning',mPlaying);
+  document.getElementById('needle').classList.toggle('playing',mPlaying);
+  document.getElementById('vinyl-label').textContent=t.a.split(' ').map(w=>w[0]).join('').slice(0,4);
+  renderTracks();
+}
+function musicToggle(){
+  const t=ROCK_YT[mCur]||ROCK_YT[0];
+  openYtFloat('https://www.youtube.com/embed/'+t.id+'?autoplay=1&rel=0&modestbranding=1', t.n+' — '+t.a);
+  mPlaying=true;
+  document.getElementById('vinyl').classList.add('spinning');
+  document.getElementById('needle').classList.add('playing');
+  updateMusicUI();
+}
+function musicNext(){mCur=(mCur+1)%TRACKS.length;mProg=0;updateMusicUI();if(mPlaying)musicToggle();}
+function musicPrev(){mCur=(mCur-1+TRACKS.length)%TRACKS.length;mProg=0;updateMusicUI();if(mPlaying)musicToggle();}
+
+// Vinyl scratch interaction
+const vinylEl=document.getElementById('vinyl');
+let scratching=false,scratchStart=0;
+vinylEl.addEventListener('mousedown',e=>{scratching=true;scratchStart=e.clientX;vinylEl.style.cursor='grabbing'});
+document.addEventListener('mouseup',()=>{scratching=false;vinylEl.style.cursor='grab'});
+document.addEventListener('mousemove',e=>{
+  if(!scratching)return;
+  const dx=e.clientX-scratchStart;
+  if(Math.abs(dx)>15){
+    vinylEl.style.transform=`rotate(${dx}deg)`;
+    if(mPlaying){clearInterval(mTimer);setTimeout(()=>{if(mPlaying)mTimer=setInterval(()=>{mProg+=.35;document.getElementById('m-bar').style.width=mProg+'%';},300);},200);}
+    scratchStart=e.clientX;
+    setTimeout(()=>{vinylEl.style.transform='';},200);
+  }
+});
+renderTracks();updateMusicUI();
+
+// ─────────────────────────────
+// LETTER
+// ─────────────────────────────
+function openLetter(){
+  const m=document.getElementById('modal-bg');m.classList.add('open');
+  document.getElementById('l-date').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  // Spawn polaroid photos
+  spawnLetterPolaroids();
+  setTimeout(()=>{
+    const seal=document.getElementById('seal');
+    if(seal){seal.classList.remove('cracking');}
+  },800);
+}
+function closeLetter(){
+  document.getElementById('modal-bg').classList.remove('open');
+  document.getElementById('letter-polaroids').innerHTML='';
+}
+
+function spawnLetterPolaroids(){
+  const container=document.getElementById('letter-polaroids');
+  container.innerHTML='';
+  if(!photoFiles||photoFiles.length===0)return;
+  // Pick 8 photos, 4 left + 4 right
+  const shuffled=[...photoFiles].sort(()=>Math.random()-.5).slice(0,8);
+  const leftSlots=[
+    {x:2,y:8,w:130,h:150,rot:-6},{x:1,y:32,w:120,h:140,rot:5},
+    {x:3,y:56,w:125,h:145,rot:-4},{x:0,y:76,w:115,h:135,rot:7},
+  ];
+  const rightSlots=[
+    {x:83,y:6,w:130,h:150,rot:6},{x:84,y:30,w:120,h:140,rot:-5},
+    {x:82,y:55,w:125,h:145,rot:4},{x:85,y:75,w:115,h:135,rot:-7},
+  ];
+  const anims=['polFloat0','polFloat1','polFloat2'];
+  [...leftSlots,...rightSlots].forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='letter-polaroid';
+    const dur=(5.5+i*0.6).toFixed(1);
+    const delay=(i*0.35).toFixed(1);
+    div.style.cssText=`left:${s.x}%;top:${s.y}%;width:${s.w}px;height:${s.h-32}px;--pr:${s.rot}deg;animation:${anims[i%3]} ${dur}s ease-in-out ${delay}s infinite;opacity:0;transition:opacity 0.8s`;
+    const img=document.createElement('img');
+    img.src=shuffled[i]||shuffled[i%shuffled.length];
+    img.alt='';img.loading='lazy';
+    img.onload=()=>{div.style.opacity='1'};
+    div.appendChild(img);
+    container.appendChild(div);
+  });
+
+  // Populate bottom photo strip with 4 photos (using next 4 from pool)
+  const bottomStrip=document.getElementById('letter-bottom-photos');
+  if(bottomStrip&&photoFiles.length>0){
+    const bottomPhotos=[...photoFiles].sort(()=>Math.random()-.5).slice(0,4);
+    bottomStrip.querySelectorAll('.letter-photo').forEach((el,i)=>{
+      const src=bottomPhotos[i]||bottomPhotos[i%bottomPhotos.length];
+      el.style.backgroundImage=`url(${src})`;
+    });
+  }
+}
+document.getElementById('modal-bg').addEventListener('click',function(e){if(e.target===this)closeLetter();});
+
+// ─────────────────────────────
+// CHANGE 6 — LETTER SECTION FLOATING PHOTOS
+// ─────────────────────────────
+function spawnLetterSectionPhotos(){
+  const container=document.getElementById('letter-float-photos');
+  if(!container||!photoFiles||photoFiles.length===0)return;
+  const photos=[...photoFiles].sort(()=>Math.random()-.5).slice(0,6);
+  const slots=[
+    // Left side: 3 photos
+    {x:2, y:15, w:120, h:140, rot:-5, anim:'polFloat0', dur:6.2},
+    {x:4, y:42, w:110, h:128, rot:4,  anim:'polFloat1', dur:7.1},
+    {x:1, y:66, w:115, h:134, rot:-3, anim:'polFloat2', dur:5.8},
+    // Right side: 3 photos
+    {x:78, y:12, w:120, h:140, rot:5,  anim:'polFloat1', dur:6.5},
+    {x:76, y:40, w:110, h:128, rot:-4, anim:'polFloat0', dur:7.3},
+    {x:79, y:65, w:115, h:134, rot:3,  anim:'polFloat2', dur:6.0},
+  ];
+  slots.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='letter-float-photo';
+    div.style.cssText=`left:${s.x}%;top:${s.y}%;width:${s.w}px;height:${s.h}px;--pr:${s.rot}deg;animation:${s.anim} ${s.dur}s ease-in-out ${i*0.4}s infinite`;
+    const img=document.createElement('img');
+    img.src=photos[i]||photos[i%photos.length];
+    img.alt='';
+    img.onload=()=>{div.style.opacity='1';};
+    div.appendChild(img);
+    container.appendChild(div);
+  });
+}
+spawnLetterSectionPhotos();
+
+// ─────────────────────────────
+// CHANGE 3a — Auto-load connections theme on page open
+// ─────────────────────────────
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    switchTab('conn');
+  });
+} else {
+  // DOM already loaded (script executes after)
+  switchTab('conn');
+}
+</script>
+</body>
+</html>
